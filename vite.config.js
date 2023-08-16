@@ -3,6 +3,9 @@ import JSZip from 'jszip';
 import fs from 'fs';
 
 export default defineConfig({
+  server: {
+    port: 3000
+  },
   plugins: [plugin()],
   build: {
     modulePreload: {
@@ -58,15 +61,14 @@ function plugin() {
       let html = bundle["index.html"];
       let js = bundle[Object.keys(bundle).filter(i => i.endsWith('.js'))[0]];
 
-      if (html.type === "asset") {
-        html.source = html.source
-          .replace(/<script.*<\/script>/, "")
-          .replace("</body>", () => `<script>${js.code}</script>`)
-          .replace(/\n+/g, "");
-      }
+      html.source = html.source
+        .replace(/<script.*<\/script>/, "")
+        .replace("</body>", () => `<script>${js.code}</script>`)
+        .replace(/\n+/g, "");
 
       await zip(html.source);
 
+      // Delete the JS so it doesn't go into the dist folder
       delete bundle[js.fileName];
     }
   };

@@ -2,10 +2,11 @@
   "private": "true",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "start": "vite"
   },
-  "devDependencies": {
+  "dependencies": {
     "jszip": "^3.10.1",
+    "kontra": "^9.0.0",
     "terser": "^5.19.2",
     "vite": "^4.4.9"
   }
