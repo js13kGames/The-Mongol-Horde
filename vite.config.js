@@ -1,4 +1,4 @@
-import { defineConfig, Plugin } from 'vite';
+import { defineConfig } from 'vite';
 import JSZip from 'jszip';
 import fs from 'fs';
 
