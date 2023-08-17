@@ -9,8 +9,8 @@ doSomething(greeter('Reece'));
 
 const { canvas, context } = init();
 
-canvas.width = 300;
-canvas.height = 200;
+canvas.width = 200;
+canvas.height = 150;
 
 function resizeCanvas() {
   const ratioWidth = window.innerWidth / canvas.width;
@@ -34,6 +34,20 @@ const sprite = Sprite({
   dx: 2
 });
 
+let characters;
+
+const image = new Image();
+image.src = 'assets/characters.png';
+image.onload = function() {
+  characters = Sprite({
+    x: 50,
+    y: 50,
+    image: image,
+    spriteLocation: [8, 0, 8, 8]
+  });
+  loop.start();
+}
+
 const loop = GameLoop({
   update: function() {
     sprite.update();
@@ -43,9 +57,9 @@ const loop = GameLoop({
     }
   },
   render: function() {
+    context.fillStyle = '#7e9432';
     context.fillRect(0, 0, canvas.width, canvas.height);
     sprite.render();
+    characters.render();
   }
 });
-
-loop.start();
