@@ -1,2 +1,4 @@
 dist
 node_modules
+*.tiled-project
+*.tiled-session

@@ -1,16 +1,12 @@
-import greeter from './other';
-import { init, Sprite, GameLoop } from 'kontra';
-
-function doSomething(thing) {
-  console.log(thing);
-}
-
-doSomething(greeter('Reece'));
+import { init, Sprite, GameLoop, TileEngine, load, dataAssets, imageAssets, keyPressed, initKeys } from 'kontra';
 
 const { canvas, context } = init();
+initKeys();
 
 canvas.width = 200;
 canvas.height = 150;
+
+
 
 function resizeCanvas() {
   const ratioWidth = window.innerWidth / canvas.width;
@@ -25,41 +21,41 @@ function resizeCanvas() {
 window.addEventListener('resize', () => resizeCanvas());
 resizeCanvas();
 
-const sprite = Sprite({
-  x: 100,
-  y: 80,
-  color: 'red',
-  width: 20,
-  height: 20,
-  dx: 2
-});
 
-let characters;
 
-const image = new Image();
-image.src = 'assets/characters.png';
-image.onload = function() {
-  characters = Sprite({
-    x: 50,
-    y: 50,
-    image: image,
+load('assets/sprites.png', 'assets/tileset.tsj', 'assets/map1.tmj').then(assets => {
+  const tileEngine = TileEngine(dataAssets['assets/map1.tmj']);
+
+  const soldier = Sprite({
+    x: 64,
+    y: 64,
+    image: imageAssets['assets/sprites.png'],
     spriteLocation: [8, 0, 8, 8]
   });
-  loop.start();
-}
 
-const loop = GameLoop({
-  update: function() {
-    sprite.update();
+  tileEngine.add(soldier);
 
-    if (sprite.x > canvas.width) {
-      sprite.x = -sprite.width;
+  const loop = GameLoop({
+    update: function() {
+      if (keyPressed('arrowup')) {
+        soldier.y--;
+      }
+      if (keyPressed('arrowdown')) {
+        soldier.y++;
+      }
+      if (keyPressed('arrowleft')) {
+        soldier.x--;
+      }
+      if (keyPressed('arrowright')) {
+        soldier.x += 0.1;
+      }
+    },
+    render: function() {
+      context.fillStyle = '#7e9432';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      tileEngine.render();
     }
-  },
-  render: function() {
-    context.fillStyle = '#7e9432';
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    sprite.render();
-    characters.render();
-  }
+  });
+
+  loop.start();
 });
