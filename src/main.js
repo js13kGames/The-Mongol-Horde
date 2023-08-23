@@ -1,8 +1,10 @@
-import { init, Sprite, GameLoop, TileEngine, load, dataAssets, imageAssets, keyPressed, initKeys, Text, onKey, initPointer, onPointer, Pool } from 'kontra';
+import { init, Sprite, GameLoop, TileEngine, load, dataAssets, imageAssets, keyPressed, initKeys, Text, onKey, initPointer, onPointer, Pool, Grid, Button, ButtonClass, getPointer } from 'kontra';
 
 const { canvas, context } = init();
 initKeys();
-initPointer();
+initPointer({
+  radius: 1
+});
 
 canvas.width = 200;
 canvas.height = 152;
@@ -29,7 +31,17 @@ resizeCanvas();
 
 
 await load('assets/sprites.png', 'assets/tileset.tsj', 'assets/map1.tmj');
+const spriteImage = imageAssets['assets/sprites.png'];
 const tileEngine = TileEngine(dataAssets['assets/map1.tmj']);
+
+const sprites = {
+  soldier: [0, 0, 8, 8],
+  farmer: [8, 0, 8, 8],
+  wizard: [16, 0, 8, 8],
+  archer: [24, 0, 8, 8],
+  knight: [32, 0, 8, 8],
+  wall: [40, 0, 8, 8]
+}
 
 const enemies = [];
 
@@ -37,8 +49,8 @@ function spawnEnemy(x, y) {
   const enemy = Sprite({
     x,
     y,
-    image: imageAssets['assets/sprites.png'],
-    spriteLocation: [16, 0, 8, 8],
+    image: spriteImage,
+    spriteLocation: sprites.wizard,
     health: 10,
     maxHealth: 10,
     moveInterval: 30,
@@ -138,24 +150,36 @@ onKey('d', () => {
   debug = !debug;
 });
 
+onKey('esc', () => {
+  selected = null;
+});
+
+function snapToGrid(x, y) {
+  return [
+    Math.floor(x / 8) * 8,
+    Math.floor(y / 8) * 8
+  ]
+}
+
 const troops = []
 onPointer('down', (e, object) => {
-  const gridX = Math.floor(e.offsetX / canvas.scale / 8);
-  const gridY = Math.floor(e.offsetY / canvas.scale / 8);
-  if (e.button == 0) {
-    const troop = Sprite({
-      x: gridX * 8,
-      y: gridY * 8,
-      image: imageAssets['assets/sprites.png'],
-      spriteLocation: [0, 0, 8, 8],
-      maxRange: 256,
-      attackInterval: 30,
-      attackTimer: 30
-    });
-    tileEngine.add(troop);
-    troops.push(troop);
-  } else if (e.button == 2) {
-    spawnEnemy(gridX * 8, gridY * 8);
+  if (!(object instanceof ToolbarButton)) {
+    const [x, y] = snapToGrid(e.offsetX / canvas.scale, e.offsetY / canvas.scale);
+    if (selected && e.button == 0) {
+      const troop = Sprite({
+        x: x,
+        y: y,
+        image: spriteImage,
+        spriteLocation: selected,
+        maxRange: 256,
+        attackInterval: 30,
+        attackTimer: 30
+      });
+      tileEngine.add(troop);
+      troops.push(troop);
+    } else if (e.button == 2) {
+      spawnEnemy(x, y);
+    }
   }
 });
 
@@ -180,7 +204,7 @@ function attack(troop, enemy) {
     x: enemy.x + enemy.width / 2,
     y: enemy.y + enemy.height / 2,
     // anchor: { x: 0.5, y: 0.5 },
-    image: imageAssets['assets/sprites.png'],
+    image: spriteImage,
     spriteLocation: [19, 9, 1, 1],
     ttl: 40,
     update: function(dt) {
@@ -206,6 +230,65 @@ const pool = Pool({
   create: Sprite
 })
 
+class ToolbarButton extends ButtonClass {
+  constructor(properties) {
+    properties.text = {
+      font: '0px none'
+    }
+    super(properties);
+  }
+
+  draw() {
+    if (this.hovered) {
+      this.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
+    }
+    super.draw();
+  }
+}
+
+let selected = null;
+let selectedSprite = Sprite({
+  image: spriteImage,
+  spriteLocation: sprites.soldier
+})
+const soldierButton = new ToolbarButton({
+  image: spriteImage,
+  spriteLocation: sprites.soldier,
+  onDown() {
+    selected = sprites.soldier;
+  }
+});
+const archerButton = new ToolbarButton({
+  image: spriteImage,
+  spriteLocation: sprites.archer,
+  onDown() {
+    selected = sprites.archer;
+  }
+});
+const wallButton = new ToolbarButton({
+  image: spriteImage,
+  spriteLocation: sprites.wall,
+  onDown() {
+    selected = sprites.wall;
+  }
+});
+const toolbar = Grid({
+  x: canvas.width / 2,
+  y: canvas.height - 8,
+  anchor: { x: 0.5, y: 0.5 },
+  flow: 'row',
+  colGap: 2,
+  children: [soldierButton, archerButton, wallButton]
+});
+const toolbarBackground = Sprite({
+  x: toolbar.x,
+  y: toolbar.y,
+  width: toolbar.width + 4,
+  height: toolbar.height + 4,
+  anchor: { x: 0.5, y: 0.5 },
+  color: 'rgba(0, 0, 0, 0.3)'
+});
 
 const loop = GameLoop({
   update: function () {
@@ -258,6 +341,16 @@ const loop = GameLoop({
     context.fillRect(0, 0, canvas.width, canvas.height);
     tileEngine.render();
     pool.render();
+    if (selected != null) {
+      const pointer = getPointer();
+      const [x, y] = snapToGrid(pointer.x, pointer.y);
+      selectedSprite.x = x;
+      selectedSprite.y = y;
+      selectedSprite.spriteLocation = selected;
+      selectedSprite.render();
+    }
+    toolbarBackground.render();
+    toolbar.render();
     if (debug) text.forEach(t => t.render());
   }
 });
