@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "jszip": "^3.10.1",
-    "kontra": "file:../kontra",
+    "kontra": "file:kontra",
     "terser": "^5.19.2",
     "vite": "^4.4.9"
   }
