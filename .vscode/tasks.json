@@ -6,8 +6,16 @@
 			"script": "build",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "npm: build",
+			"label": "Build",
 			"detail": "vite build"
+		},
+		{
+			"type": "npm",
+			"script": "start",
+			"problemMatcher": [],
+			"label": "Watch",
+			"detail": "vite",
+			"isBackground": true
 		}
 	]
 }

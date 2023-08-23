@@ -8,6 +8,7 @@ export default defineConfig({
   },
   plugins: [plugin()],
   build: {
+    target: 'esnext',
     modulePreload: {
       polyfill: false
     },
@@ -40,6 +41,10 @@ async function zip(content) {
       level: 9
     }
   })
+
+  if (!fs.existsSync('dist')) {
+    fs.mkdirSync('dist');
+  }
 
   await new Promise((resolve) => {
     jszip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })

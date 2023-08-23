@@ -24,8 +24,7 @@
     "build:docs": "gulp build:docs",
     "watch": "gulp watch",
     "dist": "gulp dist",
-    "release": "sh tasks/release.sh",
-    "prepare": "husky install"
+    "release": "sh tasks/release.sh"
   },
   "repository": {
     "type": "git",
