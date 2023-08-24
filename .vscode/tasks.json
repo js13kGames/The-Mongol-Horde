@@ -16,6 +16,14 @@
 			"label": "Watch",
 			"detail": "vite",
 			"isBackground": true
+		},
+		{
+			"type": "npm",
+			"script": "preview",
+			"problemMatcher": [],
+			"label": "Preview",
+			"detail": "vite preview",
+			"isBackground": true
 		}
 	]
 }

@@ -2,7 +2,8 @@
   "private": "true",
   "scripts": {
     "build": "vite build",
-    "start": "vite"
+    "start": "vite",
+    "preview": "vite preview"
   },
   "dependencies": {
     "jszip": "^3.10.1",
