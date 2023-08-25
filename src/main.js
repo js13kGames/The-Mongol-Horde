@@ -1,4 +1,4 @@
-import { init, Sprite, GameLoop, TileEngine, load, dataAssets, imageAssets, keyPressed, initKeys, Text, onKey, initPointer, onPointer, Pool, Grid, Button, ButtonClass, getPointer } from 'kontra';
+import { init, Sprite, GameLoop, TileEngine, load, dataAssets, imageAssets, keyPressed, initKeys, Text, onKey, initPointer, onPointer, Pool, Grid, Button, ButtonClass, getPointer, GameObjectClass, GameObject, randInt } from 'kontra';
 import map from './map';
 import tileset from './tileset';
 
@@ -49,6 +49,28 @@ load(spriteFilePath).then(() => {
 
   const enemies = [];
 
+  const spawners = [];
+  function createSpawner(x, y) {
+    const spawner = GameObject({
+      x,
+      y,
+      spawnInterval: [200, 400],
+      spawnTimer: 0,
+      update: function () {
+        this.advance();
+        if (--this.spawnTimer <= 0) {
+          this.spawnTimer = randInt(...this.spawnInterval);
+          spawnEnemy(this.x, this.y);
+        }
+      }
+    });
+    spawners.push(spawner);
+  }
+
+  createSpawner(0, 9*8);
+  createSpawner(16*8, 0);
+  createSpawner(16, 16);
+
   function spawnEnemy(x, y) {
     const enemy = Sprite({
       x,
@@ -74,82 +96,96 @@ load(spriteFilePath).then(() => {
     return enemy;
   }
 
-  const collidable = {};
-  for (const [i, v] of tileEngine.layers[1].data.entries()) {
-    const x = i % tileEngine.width;
-    const y = Math.floor(i / tileEngine.width);
-    if (v > 0) {
-      collidable[[x, y]] = true;
-    }
-  }
-
-  const goal = {
-    position: [19, 14],
-    cost: 0,
-    previous: null
-  };
-  const frontier = [goal];
-  const reached = {};
-  reached[goal.position] = goal;
-
-  function getNeighbours(x, y) {
-    const neighbors = []
-    if (x > 0) {
-      neighbors.push([x - 1, y]);
-    }
-    if (y > 0) {
-      neighbors.push([x, y - 1]);
-    }
-    if (x < tileEngine.width - 1) {
-      neighbors.push([x + 1, y]);
-    }
-    if (y < tileEngine.height - 1) {
-      neighbors.push([x, y + 1]);
-    }
-    return neighbors;
-  }
-
-  while (frontier.length) {
-    const current = frontier.shift();
-    const [cx, cy] = current.position;
-    console.log(`At ${cx},${cy}`);
-    const neighbors = getNeighbours(cx, cy);
-    console.log(`Has neighbours ${neighbors}`);
-    for (const next of neighbors) {
-      if (!(next in reached) && !collidable[next]) {
-        console.log(`Reached ${next}`);
-        const nextPoint = {
-          position: next,
-          cost: current.cost + 1,
-          previous: current
-        }
-        frontier.push(nextPoint);
-        reached[next] = nextPoint;
+  const grid = [...Array(tileEngine.width).keys()].map(i => []);
+  for (let x = 0; x < tileEngine.width; x++) {
+    for (let y = 0; y < tileEngine.height; y++) {
+      grid[x][y] = {
+        x,
+        y,
+        neighbours: [],
+        collidable: false,
+        cost: Infinity,
+        bestNeighbours: []
       }
     }
   }
 
-  const text = [];
-  for (const point of Object.values(reached)) {
-    text.push(Text({
-      text: point.cost,
-      font: '6px Arial',
-      color: 'white',
-      x: point.position[0] * 8 + 4,
-      y: point.position[1] * 8 + 4,
-      anchor: { x: 0.5, y: 0.5 },
-      textAlign: 'center'
-    }));
+  // Create grid neighbours
+  grid.forEach(gridList => gridList.forEach(point => {
+    if (point.y > 0) {
+      point.neighbours.push(grid[point.x][point.y-1]);
+    }
+    if (point.x < tileEngine.width - 1) {
+      point.neighbours.push(grid[point.x+1][point.y]);
+    }
+    if (point.y < tileEngine.height - 1) {
+      point.neighbours.push(grid[point.x][point.y+1]);
+    }
+    if (point.x > 0) {
+      point.neighbours.push(grid[point.x-1][point.y]);
+    }
+  }));
+
+  // Set collidable flag from tileset objects
+  for (const [i, v] of tileEngine.layers[1].data.entries()) {
+    const x = i % tileEngine.width;
+    const y = Math.floor(i / tileEngine.width);
+    if (v > 0) {
+      grid[x][y].collidable = true;
+    }
   }
 
-  let pathfind = false;
-  let counter = 10;
+  const goal = grid[19][14];
+  let flowFieldText = [];
+  function updateflowField() {
+    // Reset costs
+    grid.forEach(gridList => gridList.forEach(point => {
+      point.cost = Infinity;
+    }));
+    goal.cost = 0;
+
+    const frontier = [goal];
+    const reached = [goal];
+    while (frontier.length) {
+      const current = frontier.shift();
+      console.log(`At ${current.x},${current.y}`);
+      console.log(`Has neighbours ${current.neighbours.map(n => `(${n.x},${n.y})`)}`);
+      for (const next of current.neighbours) {
+        if (!reached.includes(next) && !next.collidable) {
+          console.log(`Reached ${next.x},${next.y}`);
+          next.cost = current.cost + 1;
+          frontier.push(next);
+          reached.push(next);
+        }
+      }
+    }
+
+    // Compute possible movement paths from each point to goal
+    grid.forEach(gridList => gridList.forEach(point => {
+      const bestCost = Math.min(...point.neighbours.map(n => n.cost));
+      point.bestNeighbours = point.neighbours.filter(n => n.cost == bestCost);
+    }));
+
+    // Update debug text
+    flowFieldText = [];
+    for (const point of reached) {
+      flowFieldText.push(Text({
+        text: point.cost,
+        font: '6px Arial',
+        color: 'white',
+        x: point.x * 8 + 4,
+        y: point.y * 8 + 4,
+        anchor: { x: 0.5, y: 0.5 },
+        textAlign: 'center'
+      }));
+    }
+  }
+
+  updateflowField();
+
+
+
   let debug = false;
-
-  onKey('space', () => {
-    pathfind = !pathfind;
-  });
-
   onKey('d', () => {
     debug = !debug;
   });
@@ -181,6 +217,8 @@ load(spriteFilePath).then(() => {
         });
         tileEngine.add(troop);
         troops.push(troop);
+        grid[x/8][y/8].collidable = true;
+        updateflowField();
       } else if (e.button == 2) {
         spawnEnemy(x, y);
       }
@@ -294,6 +332,10 @@ load(spriteFilePath).then(() => {
     color: 'rgba(0, 0, 0, 0.3)'
   });
 
+  function pickRandom(array) {
+    return array[randInt(0, array.length - 1)];
+  }
+
   const loop = GameLoop({
     update: function () {
       for (let i = enemies.length - 1; i >= 0; i--) {
@@ -302,41 +344,39 @@ load(spriteFilePath).then(() => {
           enemy.moveTimer = enemy.moveInterval;
           const x = enemy.x / 8;
           const y = enemy.y / 8;
-          let neighbors = getNeighbours(x, y);
-          neighbors = neighbors.map(n => reached[n]).filter(n => !!n)
-          let best = neighbors.pop();
-          for (const n of neighbors) {
-            if (n.cost < best.cost) {
-              best = n;
-            }
-          }
-          if (best.cost == 0) {
+
+          if (grid[x][y].cost == 0) {
+            // Reached the goal
             tileEngine.remove(enemy);
             enemies.splice(i, 1);
           }
-          enemy.x = best.position[0] * 8;
-          enemy.y = best.position[1] * 8;
+
+          const next = pickRandom(grid[x][y].bestNeighbours);
+          enemy.x = next.x * 8;
+          enemy.y = next.y * 8;
         }
       }
 
-      for (const troop of troops) {
-        if (--troop.attackTimer <= 0) {
-          troop.attackTimer = troop.attackInterval;
-          const enemy = getClosestEnemy(troop);
-          if (enemy) {
-            attack(troop, enemy);
-            if (enemy.health <= 0) {
-              tileEngine.remove(enemy);
-              const index = enemies.indexOf(enemy);
-              if (index >= 0) {
-                enemies.splice(index, 1);
-              }
-            }
-          }
-        }
-      }
+      // for (const troop of troops) {
+      //   if (--troop.attackTimer <= 0) {
+      //     troop.attackTimer = troop.attackInterval;
+      //     const enemy = getClosestEnemy(troop);
+      //     if (enemy) {
+      //       attack(troop, enemy);
+      //       if (enemy.health <= 0) {
+      //         tileEngine.remove(enemy);
+      //         const index = enemies.indexOf(enemy);
+      //         if (index >= 0) {
+      //           enemies.splice(index, 1);
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
 
       troops.forEach(troop => troop.weaponTimer--);
+
+      spawners.forEach(spawner => spawner.update());
 
       pool.update();
     },
@@ -355,7 +395,7 @@ load(spriteFilePath).then(() => {
       }
       toolbarBackground.render();
       toolbar.render();
-      if (debug) text.forEach(t => t.render());
+      if (debug) flowFieldText.forEach(t => t.render());
     }
   });
 

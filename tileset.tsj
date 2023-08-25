@@ -1,5 +1,5 @@
 { "columns":16,
- "image":"i.png",
+ "image":"public\/i.png",
  "imageheight":128,
  "imagewidth":128,
  "margin":0,
@@ -14,7 +14,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {

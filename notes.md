@@ -15,3 +15,4 @@
 - Flow field pathfinding https://www.redblobgames.com/pathfinding/tower-defense/
 - https://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized
 - https://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps
+- https://www.redblobgames.com/grids/circle-drawing/
