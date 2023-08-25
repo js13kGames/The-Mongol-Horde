@@ -44,7 +44,7 @@ load(spriteFilePath).then(() => {
     wizard: [16, 0, 8, 8],
     archer: [24, 0, 8, 8],
     knight: [32, 0, 8, 8],
-    wall: [40, 0, 8, 8]
+    wall: [32, 16, 8, 8]
   }
 
   const enemies = [];
@@ -52,8 +52,8 @@ load(spriteFilePath).then(() => {
   const spawners = [];
   function createSpawner(x, y) {
     const spawner = GameObject({
-      x,
-      y,
+      x: x * 8,
+      y: y * 8,
       spawnInterval: [200, 400],
       spawnTimer: 0,
       update: function () {
@@ -67,9 +67,9 @@ load(spriteFilePath).then(() => {
     spawners.push(spawner);
   }
 
-  createSpawner(0, 9*8);
-  createSpawner(16*8, 0);
-  createSpawner(16, 16);
+  createSpawner(0, 8);
+  createSpawner(13, 0);
+  createSpawner(3, 2);
 
   function spawnEnemy(x, y) {
     const enemy = Sprite({
@@ -96,6 +96,7 @@ load(spriteFilePath).then(() => {
     return enemy;
   }
 
+  // Initialise grid
   const grid = [...Array(tileEngine.width).keys()].map(i => []);
   for (let x = 0; x < tileEngine.width; x++) {
     for (let y = 0; y < tileEngine.height; y++) {
@@ -127,15 +128,15 @@ load(spriteFilePath).then(() => {
   }));
 
   // Set collidable flag from tileset objects
-  for (const [i, v] of tileEngine.layers[1].data.entries()) {
+  for (const [i, v] of tileEngine.layers[0].data.entries()) {
     const x = i % tileEngine.width;
     const y = Math.floor(i / tileEngine.width);
-    if (v > 0) {
+    if (v > 20) {
       grid[x][y].collidable = true;
     }
   }
 
-  const goal = grid[19][14];
+  const goal = grid[20][13];
   let flowFieldText = [];
   function updateflowField() {
     // Reset costs
@@ -205,7 +206,8 @@ load(spriteFilePath).then(() => {
   onPointer('down', (e, object) => {
     if (!(object instanceof ToolbarButton)) {
       const [x, y] = snapToGrid(e.offsetX / canvas.scale, e.offsetY / canvas.scale);
-      if (selected && e.button == 0) {
+      const tile = tileEngine.layers[0].data[(x / 8) + (y / 8) * tileEngine.width];
+      if (selected && e.button == 0 && (tile < 11 || tile > 20) && !troops.some(t => t.x == x && t.y == y)) {
         const troop = Sprite({
           x: x,
           y: y,
