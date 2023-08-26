@@ -1,7 +1,5 @@
 export default {
-  compressionlevel: -1,
   height: 19,
-  infinite: false,
   layers: [
     {
       data: [24, 23, 24, 24, 24, 23, 24, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 24, 24, 23, 23, 23, 23, 24, 23,
@@ -22,23 +20,9 @@ export default {
         23, 23, 0, 0, 0, 0, 8, 0, 0, 0, 0, 8, 24, 0, 0, 0, 8, 0, 0, 0, 0, 0, 24, 23, 24,
         23, 24, 24, 0, 0, 8, 0, 0, 8, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 23, 24, 24, 23, 23,
         23, 24, 24, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 23, 23, 23, 24, 23,
-        24, 23, 24, 24, 23, 24, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 24, 23, 24, 23, 23, 23, 23, 24],
-      height: 19,
-      id: 1,
-      name: "Tile Layer 1",
-      opacity: 1,
-      type: "tilelayer",
-      visible: true,
-      width: 25,
-      x: 0,
-      y: 0
+        24, 23, 24, 24, 23, 24, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 24, 23, 24, 23, 23, 23, 23, 24]
     }
   ],
-  nextlayerid: 2,
-  nextobjectid: 1,
-  orientation: "orthogonal",
-  renderorder: "right-down",
-  tiledversion: "1.10.2",
   tileheight: 8,
   tilesets: [
     {
@@ -47,7 +31,5 @@ export default {
     }
   ],
   tilewidth: 8,
-  type: "map",
-  version: "1.10",
   width: 25
 }

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import JSZip from 'jszip';
 import fs from 'fs';
+import kontra from 'rollup-plugin-kontra';
 
 export default defineConfig({
   server: {
@@ -9,7 +10,26 @@ export default defineConfig({
   preview: {
     port: 3001
   },
-  plugins: [plugin()],
+  plugins: [
+    kontra({
+      gameObject: {
+        anchor: true,
+        group: true,
+        ttl: true
+      },
+      sprite: {
+        image: true
+      },
+      text: {
+        align: true
+      },
+      tileEngine: {
+        camera: true,
+        tiled: true
+      }
+    }),
+    plugin()
+  ],
   build: {
     target: 'esnext',
     modulePreload: {
@@ -73,8 +93,7 @@ async function zip(content) {
       .on('finish', () => {
         const size = fs.statSync('dist/game.zip').size
         let percent = parseInt((size / 13312) * 100, 10);
-        console.log(`\nZip size: ${size}B`);
-        console.log(`${ percent }% of total game size used`)
+        console.log(`\nZip size: ${size}/13312B ${percent}%`);
         resolve();
       });
   });

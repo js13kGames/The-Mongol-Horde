@@ -149,11 +149,11 @@ load(spriteFilePath).then(() => {
     const reached = [goal];
     while (frontier.length) {
       const current = frontier.shift();
-      console.log(`At ${current.x},${current.y}`);
-      console.log(`Has neighbours ${current.neighbours.map(n => `(${n.x},${n.y})`)}`);
+      // console.log(`At ${current.x},${current.y}`);
+      // console.log(`Has neighbours ${current.neighbours.map(n => `(${n.x},${n.y})`)}`);
       for (const next of current.neighbours) {
         if (!reached.includes(next) && !next.collidable) {
-          console.log(`Reached ${next.x},${next.y}`);
+          // console.log(`Reached ${next.x},${next.y}`);
           next.cost = current.cost + 1;
           frontier.push(next);
           reached.push(next);
@@ -206,8 +206,8 @@ load(spriteFilePath).then(() => {
   onPointer('down', (e, object) => {
     if (!(object instanceof ToolbarButton)) {
       const [x, y] = snapToGrid(e.offsetX / canvas.scale, e.offsetY / canvas.scale);
-      const tile = tileEngine.layers[0].data[(x / 8) + (y / 8) * tileEngine.width];
-      if (selected && e.button == 0 && (tile < 11 || tile > 20) && !troops.some(t => t.x == x && t.y == y)) {
+      const tile = tileEngine.layers[0].data[(x/8) + (y/8) * tileEngine.width];
+      if (selected && e.button == 0 && (tile < 11 || tile > 20) && !grid[x/8][y/8].collidable && !(x/8 == goal.x && y/8 == goal.y)) {
         const troop = Sprite({
           x: x,
           y: y,
