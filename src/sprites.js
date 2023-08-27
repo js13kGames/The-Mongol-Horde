@@ -1,5 +1,3 @@
-import { imageAssets } from "kontra";
-
 export const sprites = {
   soldier: [0, 0, 8, 8],
   farmer: [8, 0, 8, 8],
@@ -9,4 +7,4 @@ export const sprites = {
   wall: [32, 16, 8, 8]
 };
 
-export const spriteImage = imageAssets[spriteFilePath];
+export const spriteFilePath = 'i.png';

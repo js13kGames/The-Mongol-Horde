@@ -1,19 +1,27 @@
-import { GameObject, TileEngine, getCanvas } from 'kontra';
+import { TileEngine, getCanvas, getContext, onKey, onPointer } from 'kontra';
 import map from './map';
-import { Ui } from "./ui";
+import { ToolbarButton, Ui } from "./ui";
 import { Grid } from './grid';
+import { snapToGrid } from './util';
+import { Spawner } from './spawner';
+import { Troop } from './troop';
 
 class Game {
-  enemies = [];
-  troops = [];
-  spawners = [];
-  tileEngine = TileEngine(map);
-  grid = Grid();
-  text = [];
-  debug = false;
-  ui = new Ui();
+  constructor() {
+    this.enemies = [];
+    this.troops = [];
+    this.spawners = [];
+    this.text = [];
+    this.debug = false;
+    this.ui = new Ui();
+  }
 
   init() {
+    this.tileEngine = TileEngine(map);
+    this.grid = new Grid(this.tileEngine);
+    this.grid.init();
+    this.ui.init();
+
     this.createSpawner(0, 8);
     this.createSpawner(13, 0);
     this.createSpawner(3, 2);
@@ -29,31 +37,25 @@ class Game {
     onPointer('down', (e, object) => {
       if (!(object instanceof ToolbarButton)) {
         const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
-        const tile = this.tileEngine.layers[0].data[(x/8) + (y/8) * this.tileEngine.width];
-        const point = this.grid[x/8][y/8];
+        const tile = this.tileEngine.layers[0].data[(x / 8) + (y / 8) * this.tileEngine.width];
+        const point = this.grid[x / 8][y / 8];
         if (this.ui.selected && e.button == 0 && (tile < 11 || tile > 20) && !point.collidable && point != this.grid.goal) {
-          const troop = Sprite({
-            x: x,
-            y: y,
-            image: spriteImage,
-            spriteLocation: selected,
-            maxRange: 256,
-            attackInterval: 30,
-            attackTimer: 30
-          });
-          tileEngine.add(troop);
-          troops.push(troop);
-          grid[x/8][y/8].collidable = true;
-          updateflowField();
+          this.spawnTroop(Troop({
+            x,
+            y,
+            spriteLocation: this.ui.selected
+          }));
+          point.collidable = true;
+          this.grid.updateFlowField();
         } else if (e.button == 2) {
-          spawnEnemy(x, y);
+          this.spawnEnemy(x, y);
         }
       }
     });
   }
 
   createSpawner(x, y) {
-    spawners.push();
+    this.spawners.push(Spawner(x, y));
   };
 
   spawnEnemy(enemy) {
@@ -89,6 +91,8 @@ class Game {
   };
 
   render() {
+    getContext().fillStyle = '#7e9432';
+    getContext().fillRect(0, 0, getCanvas().width, getCanvas().height);
     this.tileEngine.render();
     this.ui.render();
     if (this.debug) {

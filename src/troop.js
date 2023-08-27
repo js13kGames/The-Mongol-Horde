@@ -1,11 +1,9 @@
-import { imageAssets } from "kontra";
+import { Sprite, imageAssets } from "kontra";
+import { spriteFilePath } from './sprites';
 
-function Troop(properties) {
-  const troop = Sprite({
-    x: x,
-    y: y,
-    image: imageAssets['i.png'],
-    spriteLocation: selected,
+export function Troop(properties) {
+  return Sprite({
+    image: imageAssets[spriteFilePath],
     maxRange: 256,
     attackInterval: 30,
     attackTimer: 30,

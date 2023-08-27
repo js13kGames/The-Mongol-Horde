@@ -1,19 +1,21 @@
-import { imageAssets, Sprite, ButtonClass, getCanvas, Grid } from "kontra";
-import { sprites, spriteImage } from "./sprites";
+import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer } from "kontra";
+import { sprites, spriteFilePath } from "./sprites";
+import { snapToGrid } from './util';
+import { game } from './game';
 
-class ToolbarButton extends ButtonClass {
+export class ToolbarButton extends ButtonClass {
   constructor(spriteLocation) {
     super({
       text: {
         font: '0px none'
       },
-      image: spriteImage,
+      image: imageAssets[spriteFilePath],
       spriteLocation
     });
   }
 
   onDown() {
-    ui.selected = this.spriteLocation;
+    game.ui.selected = this.spriteLocation;
   }
 
   draw() {
@@ -25,37 +27,48 @@ class ToolbarButton extends ButtonClass {
   }
 }
 
-const soldierButton = new ToolbarButton(sprites.soldier);
-const archerButton = new ToolbarButton(sprites.archer);
-const wallButton = new ToolbarButton(sprites.wall);
-
-const toolbar = Grid({
-  x: getCanvas().width / 2,
-  y: getCanvas().height - 8,
-  anchor: { x: 0.5, y: 0.5 },
-  flow: 'row',
-  colGap: 2,
-  children: [soldierButton, archerButton, wallButton]
-});
-
-const toolbarBackground = Sprite({
-  x: toolbar.x,
-  y: toolbar.y,
-  width: toolbar.width + 4,
-  height: toolbar.height + 4,
-  anchor: { x: 0.5, y: 0.5 },
-  color: 'rgba(0, 0, 0, 0.3)'
-});
-
 export class Ui {
   selected = null;
-  cursorSprite = Sprite({
-    image: imageAssets['i.png'],
-    spriteLocation: sprites.soldier
-  });
+
+  init() {
+    this.cursorSprite = Sprite({
+      image: imageAssets[spriteFilePath],
+      spriteLocation: sprites.soldier
+    });
+
+    const soldierButton = new ToolbarButton(sprites.soldier);
+    const archerButton = new ToolbarButton(sprites.archer);
+    const wallButton = new ToolbarButton(sprites.wall);
+
+    this.toolbar = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height - 8,
+      anchor: { x: 0.5, y: 0.5 },
+      flow: 'row',
+      colGap: 2,
+      children: [soldierButton, archerButton, wallButton]
+    });
+
+    this.toolbarBackground = Sprite({
+      x: this.toolbar.x,
+      y: this.toolbar.y,
+      width: this.toolbar.width + 4,
+      height: this.toolbar.height + 4,
+      anchor: { x: 0.5, y: 0.5 },
+      color: 'rgba(0, 0, 0, 0.3)'
+    });
+  }
 
   render() {
-    toolbarBackground.render();
-    toolbar.render();
+    if (this.selected != null) {
+      const pointer = getPointer();
+      const [x, y] = snapToGrid(pointer.x, pointer.y);
+      this.cursorSprite.x = x;
+      this.cursorSprite.y = y;
+      this.cursorSprite.spriteLocation = this.selected;
+      this.cursorSprite.render();
+    }
+    this.toolbarBackground.render();
+    this.toolbar.render();
   }
 }

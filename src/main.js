@@ -1,9 +1,9 @@
-import { init, Sprite, GameLoop, TileEngine, load, dataAssets, imageAssets, keyPressed, initKeys, Text, onKey, initPointer, onPointer, Pool, Grid, Button, ButtonClass, getPointer, GameObjectClass, GameObject, randInt } from 'kontra';
-import map from './map';
+import { init, GameLoop, load, dataAssets, initKeys, initPointer } from 'kontra';
 import tileset from './tileset';
 import { game } from './game';
+import { spriteFilePath } from './sprites';
 
-const { canvas, context } = init();
+const { canvas } = init();
 initKeys();
 initPointer({
   radius: 1
@@ -29,51 +29,10 @@ function resizeCanvas() {
 window.addEventListener('resize', () => resizeCanvas());
 resizeCanvas();
 
-const spriteFilePath = 'i.png';
 const tilesetFilePath = 'ts';
 dataAssets[location.href + tilesetFilePath] = tileset;
 load(spriteFilePath).then(() => {
   game.init();
-
-
-
-  game.createSpawner(0, 8);
-  game.createSpawner(13, 0);
-  game.createSpawner(3, 2);
-
-  onKey('d', () => {
-    game.debug = !debug;
-  });
-
-  onKey('esc', () => {
-    game.ui.selected = null;
-  });
-
-  onPointer('down', (e, object) => {
-    if (!(object instanceof ToolbarButton)) {
-      const [x, y] = snapToGrid(e.offsetX / canvas.scale, e.offsetY / canvas.scale);
-      const tile = game.tileEngine.layers[0].data[(x/8) + (y/8) * game.tileEngine.width];
-      if (game.ui.selected && e.button == 0 && (tile < 11 || tile > 20) && !game.grid[x/8][y/8].collidable && !(x/8 == goal.x && y/8 == goal.y)) {
-        const troop = Sprite({
-          x: x,
-          y: y,
-          image: spriteImage,
-          spriteLocation: selected,
-          maxRange: 256,
-          attackInterval: 30,
-          attackTimer: 30
-        });
-        tileEngine.add(troop);
-        troops.push(troop);
-        grid[x/8][y/8].collidable = true;
-        updateflowField();
-      } else if (e.button == 2) {
-        spawnEnemy(x, y);
-      }
-    }
-  });
-
-
 
   function getClosestEnemy(troop) {
     let bestDistance = troop.maxRange;
@@ -116,36 +75,13 @@ load(spriteFilePath).then(() => {
     })
   }
 
-  const pool = Pool({
-    create: Sprite
-  })
-
-
-
-
-
-
+  // const pool = Pool({
+  //   create: Sprite
+  // });
 
   const loop = GameLoop({
     update: function () {
-      for (let i = enemies.length - 1; i >= 0; i--) {
-        const enemy = enemies[i];
-        if (--enemy.moveTimer <= 0) {
-          enemy.moveTimer = enemy.moveInterval;
-          const x = enemy.x / 8;
-          const y = enemy.y / 8;
-
-          if (grid[x][y].cost == 0) {
-            // Reached the goal
-            tileEngine.remove(enemy);
-            enemies.splice(i, 1);
-          }
-
-          const next = pickRandom(grid[x][y].bestNeighbours);
-          enemy.x = next.x * 8;
-          enemy.y = next.y * 8;
-        }
-      }
+      game.update();
 
       // for (const troop of troops) {
       //   if (--troop.attackTimer <= 0) {
@@ -164,28 +100,13 @@ load(spriteFilePath).then(() => {
       //   }
       // }
 
-      troops.forEach(troop => troop.weaponTimer--);
+      // troops.forEach(troop => troop.weaponTimer--);
 
-      spawners.forEach(spawner => spawner.update());
-
-      pool.update();
+      // pool.update();
     },
     render: function () {
-      context.fillStyle = '#7e9432';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      tileEngine.render();
-      pool.render();
-      if (selected != null) {
-        const pointer = getPointer();
-        const [x, y] = snapToGrid(pointer.x, pointer.y);
-        selectedSprite.x = x;
-        selectedSprite.y = y;
-        selectedSprite.spriteLocation = selected;
-        selectedSprite.render();
-      }
-      toolbarBackground.render();
-      toolbar.render();
-      if (debug) flowFieldText.forEach(t => t.render());
+      // pool.render();
+      game.render();
     }
   });
 

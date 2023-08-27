@@ -1,5 +1,6 @@
-import { Game } from './game';
+import { game } from './game';
 import { Enemy } from './enemy';
+import { GameObject, randInt } from 'kontra';
 
 export function Spawner(x, y) {
   return GameObject({
@@ -11,7 +12,7 @@ export function Spawner(x, y) {
       this.advance();
       if (--this.spawnTimer <= 0) {
         this.spawnTimer = randInt(...this.spawnInterval);
-        Game.spawnEnemy(Enemy(this.x, this.y));
+        game.spawnEnemy(Enemy(this.x, this.y));
       }
     }
   })

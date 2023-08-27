@@ -1,58 +1,67 @@
+import { Text } from 'kontra';
 import { game } from "./game";
 
-export function Grid() {
-  // Initialise grid
-  const grid = [...Array(tileEngine.width).keys()].map(i => []);
-
-  for (let x = 0; x < game.tileEngine.width; x++) {
-    for (let y = 0; y < game.tileEngine.height; y++) {
-      grid[x][y] = {
-        x,
-        y,
-        neighbours: [],
-        collidable: false,
-        cost: Infinity,
-        bestNeighbours: []
+export class Grid {
+  constructor(tileEngine) {
+    this.width = tileEngine.width;
+    this.height = tileEngine.height;
+    this.points = [];
+    for (let x = 0; x < this.width; x++) {
+      this[x] = [];
+      for (let y = 0; y < this.height; y++) {
+        const point = {
+          x,
+          y,
+          neighbours: [],
+          collidable: false,
+          cost: Infinity,
+          bestNeighbours: []
+        };
+        this[x][y] = point;
+        this.points.push(point);
       }
     }
+    this.goal = this[20][13];
   }
 
-  // Create grid neighbours
-  grid.forEach(gridList => gridList.forEach(point => {
-    if (point.y > 0) {
-      point.neighbours.push(grid[point.x][point.y - 1]);
-    }
-    if (point.x < tileEngine.width - 1) {
-      point.neighbours.push(grid[point.x + 1][point.y]);
-    }
-    if (point.y < tileEngine.height - 1) {
-      point.neighbours.push(grid[point.x][point.y + 1]);
-    }
-    if (point.x > 0) {
-      point.neighbours.push(grid[point.x - 1][point.y]);
-    }
-  }));
+  init() {
+    // Create grid neighbours
+    this.points.forEach(point => {
+      if (point.y > 0) {
+        point.neighbours.push(this[point.x][point.y - 1]);
+      }
+      if (point.x < this.width - 1) {
+        point.neighbours.push(this[point.x + 1][point.y]);
+      }
+      if (point.y < this.height - 1) {
+        point.neighbours.push(this[point.x][point.y + 1]);
+      }
+      if (point.x > 0) {
+        point.neighbours.push(this[point.x - 1][point.y]);
+      }
+    });
 
-  // Set collidable flag from tileset objects
-  for (const [i, v] of game.tileEngine.layers[0].data.entries()) {
-    const x = i % game.tileEngine.width;
-    const y = Math.floor(i / game.tileEngine.width);
-    if (v > 20) {
-      grid[x][y].collidable = true;
+    // Set collidable flag from tileset objects
+    for (const [i, v] of game.tileEngine.layers[0].data.entries()) {
+      const x = i % this.width;
+      const y = Math.floor(i / this.width);
+      if (v > 20) {
+        this[x][y].collidable = true;
+      }
     }
+
+    this.updateFlowField();
   }
 
-  grid.goal = grid[20][13];
-
-  grid.prototype.updateFlowField = function () {
+  updateFlowField() {
     // Reset costs
-    grid.forEach(gridList => gridList.forEach(point => {
+    this.points.forEach(point => {
       point.cost = Infinity;
-    }));
-    goal.cost = 0;
+    });
+    this.goal.cost = 0;
 
-    const frontier = [goal];
-    const reached = [goal];
+    const frontier = [this.goal];
+    const reached = [this.goal];
     while (frontier.length) {
       const current = frontier.shift();
       // console.log(`At ${current.x},${current.y}`);
@@ -68,10 +77,10 @@ export function Grid() {
     }
 
     // Compute possible movement paths from each point to goal
-    grid.forEach(gridList => gridList.forEach(point => {
+    this.points.forEach(point => {
       const bestCost = Math.min(...point.neighbours.map(n => n.cost));
       point.bestNeighbours = point.neighbours.filter(n => n.cost == bestCost);
-    }));
+    });
 
     // Update debug text
     game.text = [];
@@ -87,6 +96,4 @@ export function Grid() {
       }));
     }
   }
-
-  grid.updateflowField();
 }
