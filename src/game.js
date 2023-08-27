@@ -4,7 +4,8 @@ import { ToolbarButton, Ui } from "./ui";
 import { Grid } from './grid';
 import { snapToGrid } from './util';
 import { Spawner } from './spawner';
-import { Troop } from './troop';
+import { sprites } from './sprites';
+import { Soldier, Archer, Wall } from './troop';
 
 class Game {
   constructor() {
@@ -40,11 +41,18 @@ class Game {
         const tile = this.tileEngine.layers[0].data[(x / 8) + (y / 8) * this.tileEngine.width];
         const point = this.grid[x / 8][y / 8];
         if (this.ui.selected && e.button == 0 && (tile < 11 || tile > 20) && !point.collidable && point != this.grid.goal) {
-          this.spawnTroop(Troop({
-            x,
-            y,
-            spriteLocation: this.ui.selected
-          }));
+          const properties = { x, y };
+          switch (this.ui.selected) {
+            case sprites.soldier:
+              this.spawnTroop(Soldier(properties));
+              break;
+            case sprites.archer:
+              this.spawnTroop(Archer(properties));
+              break;
+            case sprites.wall:
+              this.spawnTroop(Wall(properties));
+              break;
+          }
           point.collidable = true;
           this.grid.updateFlowField();
         } else if (e.button == 2) {
