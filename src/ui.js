@@ -1,7 +1,8 @@
-import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer } from "kontra";
+import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getContext, GameObject } from "kontra";
 import { sprites, spriteFilePath } from "./sprites";
-import { snapToGrid } from './util';
+import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
+import { ranges } from './troop';
 
 export class ToolbarButton extends ButtonClass {
   constructor(spriteLocation) {
@@ -27,6 +28,38 @@ export class ToolbarButton extends ButtonClass {
   }
 }
 
+export function RangeIndicator() {
+  return GameObject({
+    squares: [],
+    visible: true,
+
+    setRadius(radius) {
+      this.squares = [];
+      if (radius == 0) return;
+      const top = Math.ceil(-radius);
+      const bottom = Math.floor(radius);
+      const left = Math.ceil(-radius);
+      const right = Math.floor(radius);
+      for (let x = left; x <= right; x++) {
+        for (let y = top; y <= bottom; y++) {
+          if (insideCircle(this.position, { x, y }, radius)) {
+            this.squares.push({ x, y })
+          }
+        }
+      }
+    },
+
+    render() {
+      if (this.visible) {
+        getContext().fillStyle = 'rgba(255, 0, 0, 0.4)';
+        this.squares.forEach(({ x, y }) => {
+          getContext().fillRect(...snapToGrid(x * 8, y * 8), 8, 8);
+        });
+      }
+    }
+  })
+}
+
 export class Ui {
   selected = null;
 
@@ -35,6 +68,8 @@ export class Ui {
       image: imageAssets[spriteFilePath],
       spriteLocation: sprites.soldier
     });
+    this.rangeIndicator = RangeIndicator();
+    this.cursorSprite.addChild(this.rangeIndicator);
 
     const soldierButton = new ToolbarButton(sprites.soldier);
     const archerButton = new ToolbarButton(sprites.archer);
@@ -67,6 +102,7 @@ export class Ui {
       this.cursorSprite.y = y;
       this.cursorSprite.spriteLocation = this.selected;
       this.cursorSprite.render();
+      this.rangeIndicator.setRadius(ranges[this.selected]);
     }
     this.toolbarBackground.render();
     this.toolbar.render();

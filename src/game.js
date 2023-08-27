@@ -1,4 +1,4 @@
-import { TileEngine, getCanvas, getContext, onKey, onPointer } from 'kontra';
+import { TileEngine, getCanvas, getContext, onKey, onPointer, untrack } from 'kontra';
 import map from './map';
 import { ToolbarButton, Ui } from "./ui";
 import { Grid } from './grid';
@@ -75,6 +75,7 @@ class Game {
   };
 
   despawn(object) {
+    untrack(object);
     removeFrom(this.enemies, object);
     removeFrom(this.troops, object);
     this.tileEngine.remove(object);

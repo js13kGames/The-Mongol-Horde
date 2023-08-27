@@ -17,3 +17,10 @@ export function removeFrom(array, item) {
     array.splice(index, 1);
   }
 }
+
+export function insideCircle(center, point, radius) {
+  const dx = center.x - point.x;
+  const dy = center.y - point.y;
+  const distanceSquared = (dx * dx) + (dy * dy);
+  return distanceSquared <= radius * radius;
+}

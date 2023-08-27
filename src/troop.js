@@ -1,11 +1,12 @@
-import { Sprite, imageAssets } from "kontra";
+import { Sprite, imageAssets, track } from "kontra";
 import { spriteFilePath, sprites } from './sprites';
 import { game } from './game';
+import { RangeIndicator } from './ui';
 
 function Troop(properties) {
-  return Sprite({
+  const troop = Sprite({
     image: imageAssets[spriteFilePath],
-    maxRange: 256,
+    maxRange: ranges[properties.spriteLocation],
     attackTimer: properties.attackInterval,
     ...properties,
 
@@ -24,7 +25,7 @@ function Troop(properties) {
     },
 
     getClosestEnemy() {
-      let bestDistance = this.maxRange;
+      let bestDistance = (this.maxRange * 8) ** 2;
       let closest = null;
       for (const enemy of game.enemies) {
         const distanceSquared = Math.abs((this.x - enemy.x) ** 2 + (this.y - enemy.y) ** 2);
@@ -33,14 +34,27 @@ function Troop(properties) {
         }
       }
       return closest;
+    },
+
+    onOver() {
+      rangeIndicator.visible = true;
+    },
+
+    onOut() {
+      rangeIndicator.visible = false;
     }
   });
+  track(troop);
+  const rangeIndicator = RangeIndicator();
+  rangeIndicator.setRadius(troop.maxRange);
+  rangeIndicator.visible = false;
+  troop.addChild(rangeIndicator);
+  return troop;
 }
 
 export function Soldier(properties) {
   return Troop({
     spriteLocation: sprites.soldier,
-    maxRange: 256,
     attackInterval: 20,
     damage: 2,
     ...properties
@@ -50,7 +64,6 @@ export function Soldier(properties) {
 export function Archer(properties) {
   return Troop({
     spriteLocation: sprites.archer,
-    maxRange: 512,
     attackInterval: 60,
     damage: 2,
     ...properties
@@ -63,4 +76,10 @@ export function Wall(properties) {
     attackInterval: Infinity,
     ...properties
   });
+}
+
+export const ranges = {
+  [sprites.soldier]: 1.5,
+  [sprites.archer]: 3.5,
+  [sprites.wall]: 0
 }
