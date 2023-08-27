@@ -3,12 +3,12 @@ import { game } from "./game";
 import { pickRandom } from './util';
 import { spriteFilePath, sprites } from './sprites';
 
-export function Enemy(x, y) {
+export function Enemy(spriteLocation, x, y) {
   const enemy = Sprite({
     x,
     y,
     image: imageAssets[spriteFilePath],
-    spriteLocation: sprites.wizard,
+    spriteLocation,
     health: 10,
     maxHealth: 10,
     moveInterval: 30,
@@ -21,6 +21,7 @@ export function Enemy(x, y) {
         if (point == game.grid.goal) {
           // Reached the goal
           game.despawn(this);
+          game.treasureHealth--;
         } else {
           // Move to next point
           const next = pickRandom(point.bestNeighbours);

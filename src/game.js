@@ -2,10 +2,11 @@ import { TileEngine, getCanvas, getContext, onKey, onPointer } from 'kontra';
 import map from './map';
 import { ToolbarButton, Ui } from "./ui";
 import { Grid } from './grid';
-import { snapToGrid } from './util';
-import { Spawner } from './spawner';
+import { removeFrom, snapToGrid } from './util';
 import { sprites } from './sprites';
 import { Soldier, Archer, Wall } from './troop';
+import { nextWave } from './wave';
+import { LOSE, PLAYING, WIN } from './state';
 
 class Game {
   constructor() {
@@ -15,6 +16,9 @@ class Game {
     this.text = [];
     this.debug = false;
     this.ui = new Ui();
+    this.waveLeft = 10;
+    this.state = PLAYING;
+    this.treasureHealth = 2;
   }
 
   init() {
@@ -22,10 +26,7 @@ class Game {
     this.grid = new Grid(this.tileEngine);
     this.grid.init();
     this.ui.init();
-
-    this.createSpawner(0, 8);
-    this.createSpawner(13, 0);
-    this.createSpawner(3, 2);
+    this.wave = nextWave();
 
     onKey('d', () => {
       this.debug = !this.debug;
@@ -62,11 +63,8 @@ class Game {
     });
   }
 
-  createSpawner(x, y) {
-    this.spawners.push(Spawner(x, y));
-  };
-
   spawnEnemy(enemy) {
+    this.waveLeft--;
     this.enemies.push(enemy);
     this.tileEngine.add(enemy);
   };
@@ -77,25 +75,36 @@ class Game {
   };
 
   despawn(object) {
-    let index = this.enemies.indexOf(object);
-    if (index >= 0) {
-      this.enemies.splice(index, 1);
-    }
-    index = this.troops.indexOf(object);
-    if (index >= 0) {
-      this.troops.splice(index, 1);
-    }
+    removeFrom(this.enemies, object);
+    removeFrom(this.troops, object);
     this.tileEngine.remove(object);
   };
 
   update() {
-    for (let i = this.enemies.length - 1; i >= 0; i--) {
-      this.enemies[i].update();
+    if (this.state == PLAYING) {
+      for (let i = this.enemies.length - 1; i >= 0; i--) {
+        this.enemies[i].update();
+      }
+      for (let i = this.troops.length - 1; i >= 0; i--) {
+        this.troops[i].update();
+      }
+      this.spawners.forEach(spawner => spawner.update());
+      this.wave.update();
+      if (this.treasureHealth <= 0) {
+        this.state = LOSE;
+      }
+      if (this.wave.isFinished() && !this.enemies.length) {
+        console.log('Wave finished!');
+        this.wave = nextWave();
+        if (!this.wave) {
+          this.state = WIN;
+        }
+      }
+    } else if (this.state == WIN) {
+      console.log('Win!');
+    } else if (this.state == LOSE) {
+      console.log('Game over');
     }
-    for (let i = this.troops.length - 1; i >= 0; i--) {
-      this.troops[i].update();
-    }
-    this.spawners.forEach(spawner => spawner.update());
   };
 
   render() {

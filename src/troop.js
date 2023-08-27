@@ -14,7 +14,7 @@ function Troop(properties) {
         this.attackTimer = this.attackInterval;
         const enemy = this.getClosestEnemy(this);
         if (enemy) {
-          console.log('Attack', this, enemy);
+          // console.log('Attack', this, enemy);
           enemy.health -= this.damage;
           if (enemy.health <= 0) {
             game.despawn(enemy);

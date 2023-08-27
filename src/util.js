@@ -10,3 +10,10 @@ export function snapToGrid(x, y) {
     Math.floor(y / 8) * 8
   ]
 }
+
+export function removeFrom(array, item) {
+  const index = array.indexOf(item);
+  if (index >= 0) {
+    array.splice(index, 1);
+  }
+}
