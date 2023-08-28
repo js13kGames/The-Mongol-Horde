@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import fs from 'fs';
 import kontra from 'rollup-plugin-kontra';
 import fullReload from "vite-plugin-full-reload";
+import { Packer } from 'roadroller';
 
 export default defineConfig({
   server: {
@@ -55,12 +56,11 @@ export default defineConfig({
         unsafe_proto: true
       },
       mangle: {
-        // properties: 'true', // Seems to be breaking pointer events
-        // properties: {
-        //   debug: '',
-        //   keep_quoted: true,
-        // },
-        // reserved: ['onOver'],
+        properties: {
+          // debug: '',
+          keep_quoted: true,
+          reserved: ['onOver', 'onDown', 'onUp', 'onOut'],
+        },
         module: true,
         toplevel: true
       },
@@ -102,16 +102,28 @@ async function zip(content) {
   });
 }
 
+async function roadroll(data) {
+  const packer = new Packer([{
+    data,
+    type: 'js',
+    action: 'eval'
+  }], {});
+  await packer.optimize(2);
+  const { firstLine, secondLine } = packer.makeDecoder();
+  return firstLine + secondLine;
+}
+
 function plugin() {
   return {
     enforce: "post",
     generateBundle: async (options, bundle) => {
-      let html = bundle["index.html"];
-      let js = bundle[Object.keys(bundle).filter(i => i.endsWith('.js'))[0]];
+      const html = bundle["index.html"];
+      const js = bundle[Object.keys(bundle).filter(i => i.endsWith('.js'))[0]];
+      const packedJs = await roadroll(js.code);
 
       html.source = html.source
         .replace(/<script.*<\/script>/, "")
-        .replace("</body>", () => `<script>${js.code}</script>`)
+        .replace("</body>", () => `<script>${packedJs}</script>`)
         .replace(/\n+/g, "");
 
       await zip(html.source);
