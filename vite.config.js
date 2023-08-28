@@ -2,10 +2,12 @@ import { defineConfig } from 'vite';
 import JSZip from 'jszip';
 import fs from 'fs';
 import kontra from 'rollup-plugin-kontra';
+import fullReload from "vite-plugin-full-reload";
 
 export default defineConfig({
   server: {
-    port: 3000
+    port: 3000,
+    hmr: false
   },
   preview: {
     port: 3001
@@ -28,7 +30,8 @@ export default defineConfig({
         tiled: true
       }
     }),
-    plugin()
+    plugin(),
+    fullReload(['src/**/*', 'public/**/*'])
   ],
   build: {
     target: 'esnext',
