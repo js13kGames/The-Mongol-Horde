@@ -1,5 +1,5 @@
-import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getContext, GameObject } from "kontra";
-import { sprites, spriteFilePath } from "./sprites";
+import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getContext, GameObject } from 'kontra';
+import { sprites, spriteFilePath } from './sprites';
 import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
 import { ranges } from './troop';
@@ -43,7 +43,7 @@ export function RangeIndicator() {
       for (let x = left; x <= right; x++) {
         for (let y = top; y <= bottom; y++) {
           if (insideCircle(this.position, { x, y }, radius)) {
-            this.squares.push({ x, y })
+            this.squares.push({ x, y });
           }
         }
       }
@@ -57,7 +57,7 @@ export function RangeIndicator() {
         });
       }
     }
-  })
+  });
 }
 
 export class Ui {

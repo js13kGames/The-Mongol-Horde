@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import JSZip from 'jszip';
 import fs from 'fs';
 import kontra from 'rollup-plugin-kontra';
-import fullReload from "vite-plugin-full-reload";
+import fullReload from 'vite-plugin-full-reload';
 import { Packer } from 'roadroller';
 
 export default defineConfig({
@@ -72,7 +72,7 @@ export default defineConfig({
     },
     assetsInlineLimit: 0
   }
-})
+});
 
 async function zip(content) {
   if (!fs.existsSync('dist')) {
@@ -94,7 +94,7 @@ async function zip(content) {
     jszip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
       .pipe(fs.createWriteStream('dist/game.zip'))
       .on('finish', () => {
-        const size = fs.statSync('dist/game.zip').size
+        const size = fs.statSync('dist/game.zip').size;
         let percent = parseInt((size / 13312) * 100, 10);
         console.log(`\nZip size: ${size}/13312B ${percent}%`);
         resolve();
@@ -115,16 +115,16 @@ async function roadroll(data) {
 
 function plugin() {
   return {
-    enforce: "post",
+    enforce: 'post',
     generateBundle: async (options, bundle) => {
-      const html = bundle["index.html"];
+      const html = bundle['index.html'];
       const js = bundle[Object.keys(bundle).filter(i => i.endsWith('.js'))[0]];
       const packedJs = await roadroll(js.code);
 
       html.source = html.source
-        .replace(/<script.*<\/script>/, "")
-        .replace("</body>", () => `<script>${packedJs}</script>`)
-        .replace(/\n+/g, "");
+        .replace(/<script.*<\/script>/, '')
+        .replace('</body>', () => `<script>${packedJs}</script>`)
+        .replace(/\n+/g, '');
 
       await zip(html.source);
 

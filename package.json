@@ -3,15 +3,53 @@
   "scripts": {
     "build": "vite build",
     "start": "vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --fix"
   },
   "dependencies": {
+    "eslint": "^8.48.0",
     "jszip": "^3.10.1",
     "kontra": "file:kontra",
     "roadroller": "^2.1.0",
     "rollup-plugin-kontra": "^1.0.1",
     "terser": "^5.19.2",
-    "vite": "^4.4.9",
-    "vite-plugin-full-reload": "^1.0.5"
+    "vite-plugin-full-reload": "^1.0.5",
+    "vite": "^4.4.9"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "indent": [
+        "error",
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    },
+    "ignorePatterns": [
+      "dist",
+      "kontra"
+    ]
   }
 }

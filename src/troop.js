@@ -1,4 +1,4 @@
-import { Sprite, imageAssets, track } from "kontra";
+import { Sprite, imageAssets, track } from 'kontra';
 import { spriteFilePath, sprites } from './sprites';
 import { game } from './game';
 import { RangeIndicator } from './ui';
@@ -82,4 +82,4 @@ export const ranges = {
   [sprites.soldier]: 1.5,
   [sprites.archer]: 3.5,
   [sprites.wall]: 0
-}
+};

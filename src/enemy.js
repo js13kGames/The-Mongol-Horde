@@ -1,7 +1,7 @@
 import { Sprite, imageAssets } from 'kontra';
-import { game } from "./game";
+import { game } from './game';
 import { pickRandom } from './util';
-import { spriteFilePath, sprites } from './sprites';
+import { spriteFilePath } from './sprites';
 
 export function Enemy(spriteLocation, x, y) {
   const enemy = Sprite({

@@ -1,6 +1,6 @@
 import { TileEngine, getCanvas, getContext, onKey, onPointer, untrack } from 'kontra';
 import map from './map';
-import { ToolbarButton, Ui } from "./ui";
+import { ToolbarButton, Ui } from './ui';
 import { Grid } from './grid';
 import { removeFrom, snapToGrid } from './util';
 import { sprites } from './sprites';
@@ -67,19 +67,19 @@ class Game {
     this.waveLeft--;
     this.enemies.push(enemy);
     this.tileEngine.add(enemy);
-  };
+  }
 
   spawnTroop(troop) {
     this.troops.push(troop);
     this.tileEngine.add(troop);
-  };
+  }
 
   despawn(object) {
     untrack(object);
     removeFrom(this.enemies, object);
     removeFrom(this.troops, object);
     this.tileEngine.remove(object);
-  };
+  }
 
   update() {
     if (this.state == PLAYING) {
@@ -106,7 +106,7 @@ class Game {
     } else if (this.state == LOSE) {
       console.log('Game over');
     }
-  };
+  }
 
   render() {
     getContext().fillStyle = '#7e9432';

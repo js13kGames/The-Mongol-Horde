@@ -1,5 +1,5 @@
 import { Text } from 'kontra';
-import { game } from "./game";
+import { game } from './game';
 
 export class Grid {
   constructor(tileEngine) {

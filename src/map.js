@@ -27,9 +27,9 @@ export default {
   tilesets: [
     {
       firstgid: 1,
-      source: "ts"
+      source: 'ts'
     }
   ],
   tilewidth: 8,
   width: 25
-}
+};
