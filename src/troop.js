@@ -12,9 +12,9 @@ function Troop(properties) {
 
     update() {
       if (--this.attackTimer <= 0) {
-        this.attackTimer = this.attackInterval;
         const enemy = this.getClosestEnemy(this);
         if (enemy) {
+          this.attackTimer = this.attackInterval;
           // console.log('Attack', this, enemy);
           enemy.health -= this.damage;
           if (enemy.health <= 0) {
