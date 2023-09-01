@@ -14,6 +14,7 @@ export class Grid {
           y,
           neighbours: [],
           collidable: false,
+          isPath: false,
           cost: Infinity,
           bestNeighbours: []
         };
@@ -41,12 +42,14 @@ export class Grid {
       }
     });
 
-    // Set collidable flag from tileset objects
+    // Set tile flags from tileset data
     for (const [i, v] of game.tileEngine.layers[0].data.entries()) {
       const x = i % this.width;
       const y = Math.floor(i / this.width);
-      if (v > 20) {
+      if (v > 22) {
         this[x][y].collidable = true;
+      } else if (v > 12 && v < 23) {
+        this[x][y].isPath = true;
       }
     }
 

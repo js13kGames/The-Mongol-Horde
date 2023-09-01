@@ -34,11 +34,11 @@ class Wave {
 
 const waves = [
   new Wave([
-    { type: sprites.archer, count: 1 },
-    { type: sprites.soldier, count: 2 }
+    { type: sprites.badArcher, count: 1 },
+    { type: sprites.badSoldier, count: 2 }
   ]),
   new Wave([
-    { type: sprites.knight, count: 4 }
+    { type: sprites.badKnight, count: 4 }
   ])
 ];
 

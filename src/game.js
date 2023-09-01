@@ -39,9 +39,8 @@ class Game {
     onPointer('down', (e, object) => {
       if (!(object instanceof ToolbarButton)) {
         const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
-        const tile = this.tileEngine.layers[0].data[(x / 8) + (y / 8) * this.tileEngine.width];
         const point = this.grid[x / 8][y / 8];
-        if (this.ui.selected && e.button == 0 && (tile < 11 || tile > 20) && !point.collidable && point != this.grid.goal) {
+        if (this.ui.selected && e.button == 0 && !point.isPath && !point.collidable && point != this.grid.goal) {
           const properties = { x, y };
           switch (this.ui.selected) {
             case sprites.soldier:

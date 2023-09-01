@@ -1,10 +1,20 @@
+function getCoords(index) {
+  const x = (index * 8) % 64;
+  const y = Math.floor(index / 8) * 8;
+  return [x, y, 8, 8];
+}
+
 export const sprites = {
-  soldier: [0, 0, 8, 8],
-  farmer: [8, 0, 8, 8],
-  wizard: [16, 0, 8, 8],
-  archer: [24, 0, 8, 8],
-  knight: [32, 0, 8, 8],
-  wall: [32, 16, 8, 8]
+  soldier: getCoords(1),
+  farmer: getCoords(2),
+  wizard: getCoords(3),
+  archer: getCoords(4),
+  knight: getCoords(5),
+  wolf: getCoords(6),
+  badSoldier: getCoords(7),
+  badKnight: getCoords(8),
+  badArcher: getCoords(9),
+  wall: getCoords(22)
 };
 
 export const spriteFilePath = 'i.png';
