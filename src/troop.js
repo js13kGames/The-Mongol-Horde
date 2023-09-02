@@ -19,6 +19,7 @@ function Troop(properties) {
           enemy.health -= this.damage;
           if (enemy.health <= 0) {
             game.despawn(enemy);
+            game.gold += 5;
           }
         }
       }
@@ -70,6 +71,15 @@ export function Archer(properties) {
   });
 }
 
+export function Knight(properties) {
+  return Troop({
+    spriteLocation: sprites.knight,
+    attackInterval: 40,
+    damage: 4,
+    ...properties
+  });
+}
+
 export function Wall(properties) {
   return Troop({
     spriteLocation: sprites.wall,
@@ -80,6 +90,7 @@ export function Wall(properties) {
 
 export const ranges = {
   [sprites.soldier]: 1.5,
+  [sprites.knight]: 1.5,
   [sprites.archer]: 3.5,
   [sprites.wall]: 0
 };

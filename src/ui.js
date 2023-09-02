@@ -1,8 +1,9 @@
-import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getContext, GameObject } from 'kontra';
+import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getContext, GameObject, lerp, Text } from 'kontra';
 import { sprites, spriteFilePath } from './sprites';
 import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
 import { ranges } from './troop';
+import { write } from './font';
 
 export class ToolbarButton extends ButtonClass {
   constructor(spriteLocation) {
@@ -73,25 +74,78 @@ export class Ui {
 
     const soldierButton = new ToolbarButton(sprites.soldier);
     const archerButton = new ToolbarButton(sprites.archer);
+    const knightButton = new ToolbarButton(sprites.knight);
     const wallButton = new ToolbarButton(sprites.wall);
 
-    this.toolbar = Grid({
-      x: getCanvas().width / 2,
+    this.toolbar = Sprite({
       y: getCanvas().height - 8,
+      width: getCanvas().width,
+      height: 16,
+      anchor: { x: 0, y: 0.5 },
+      color: 'rgb(60, 60, 60)'
+    });
+
+    const troopSelectionGrid = Grid({
       anchor: { x: 0.5, y: 0.5 },
       flow: 'row',
       colGap: 2,
-      children: [soldierButton, archerButton, wallButton]
+      children: [soldierButton, archerButton, knightButton, wallButton]
     });
-
-    this.toolbarBackground = Sprite({
-      x: this.toolbar.x,
+    this.troopSelection = Sprite({
+      x: getCanvas().width / 2,
       y: this.toolbar.y,
-      width: this.toolbar.width + 4,
-      height: this.toolbar.height + 4,
+      width: troopSelectionGrid.width + 4,
+      height: 12,
       anchor: { x: 0.5, y: 0.5 },
-      color: 'rgba(0, 0, 0, 0.3)'
+      color: 'rgb(70, 70, 70)'
     });
+    this.troopSelection.addChild(troopSelectionGrid);
+
+    this.treasureHealth = Sprite({
+      x: getCanvas().width - 4,
+      y: this.toolbar.y,
+      width: 36,
+      height: 10,
+      anchor: { x: 1, y: 0.5 },
+      color: 'rgb(70, 70, 70)'
+    });
+    this.treasureHealth.addChild(
+      Sprite({
+        x: -34,
+        image: imageAssets[spriteFilePath],
+        spriteLocation: [1, 1, 6, 6],
+        anchor: { x: 0, y: 0.5 }
+      }),
+      Sprite({
+        x: -26,
+        width: 24,
+        height: 6,
+        anchor: { x: 0, y: 0.5 },
+        color: 'rgb(65, 65, 65)'
+      }),
+      Sprite({
+        x: -26,
+        height: 6,
+        anchor: { x: 0, y: 0.5 },
+        color: 'rgb(182, 65, 50)'
+      }));
+
+    this.resources = Sprite({
+      x: 4,
+      y: this.toolbar.y,
+      width: 36,
+      height: 10,
+      anchor: { x: 0, y: 0.5 },
+      color: 'rgb(70, 70, 70)'
+    });
+    this.resources.addChild(
+      Sprite({
+        x: 2,
+        image: imageAssets[spriteFilePath],
+        spriteLocation: [25, 25, 6, 6],
+        anchor: { x: 0, y: 0.5 }
+      })
+    );
   }
 
   render() {
@@ -104,7 +158,11 @@ export class Ui {
       this.cursorSprite.render();
       this.rangeIndicator.setRadius(ranges[this.selected]);
     }
-    this.toolbarBackground.render();
     this.toolbar.render();
+    this.troopSelection.render();
+    this.treasureHealth.children[2].width = lerp(0, 24, game.treasureHealth / game.maxTreasureHealth);
+    this.treasureHealth.render();
+    this.resources.render();
+    write(game.gold.toString(), 14, 141);
   }
 }

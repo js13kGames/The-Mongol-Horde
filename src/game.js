@@ -4,7 +4,7 @@ import { ToolbarButton, Ui } from './ui';
 import { Grid } from './grid';
 import { removeFrom, snapToGrid } from './util';
 import { sprites } from './sprites';
-import { Soldier, Archer, Wall } from './troop';
+import { Soldier, Archer, Wall, Knight } from './troop';
 import { nextWave } from './wave';
 import { LOSE, PLAYING, WIN } from './state';
 
@@ -18,7 +18,9 @@ class Game {
     this.ui = new Ui();
     this.waveLeft = 10;
     this.state = PLAYING;
-    this.treasureHealth = 2;
+    this.treasureHealth = 4;
+    this.maxTreasureHealth = 4;
+    this.gold = 10;
   }
 
   init() {
@@ -51,6 +53,9 @@ class Game {
               break;
             case sprites.wall:
               this.spawnTroop(Wall(properties));
+              break;
+            case sprites.knight:
+              this.spawnTroop(Knight(properties));
               break;
           }
           point.collidable = true;
