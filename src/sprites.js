@@ -16,6 +16,7 @@ export const sprites = {
   badKnight: getCoords(8),
   badArcher: getCoords(9),
   wall: getCoords(22),
+  wallTop: getCoords(23),
   coin: [25, 25, 6, 6]
 };
 

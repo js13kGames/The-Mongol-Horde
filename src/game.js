@@ -39,6 +39,16 @@ class Game {
       this.ui.selected = null;
     });
 
+    const checkWallJoin = (x, y) => {
+      const wallAbove = this.troops.find(troop => troop.x == x && troop.y == y - 8);
+      if (wallAbove) {
+        wallAbove.spriteLocation = sprites.wallTop;
+      }
+      if (this.troops.find(troop => troop.x == x && troop.y == y + 8)) {
+        this.troops[this.troops.length - 1].spriteLocation = sprites.wallTop;
+      }
+    };
+
     onPointer('down', (e, object) => {
       if (!(object instanceof ToolbarButton)) {
         const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
@@ -54,6 +64,7 @@ class Game {
               break;
             case sprites.wall:
               this.spawnTroop(Wall(properties));
+              checkWallJoin(x, y);
               break;
             case sprites.knight:
               this.spawnTroop(Knight(properties));
@@ -121,9 +132,9 @@ class Game {
       this.text.forEach(t => t.render());
     }
     if (this.state == WIN) {
-      write('THE GOLD IS SAFE!', (200/2)-(72/2), 152/4);
+      write('THE GOLD IS SAFE!', (200 / 2) - (72 / 2), 152 / 4);
     } else if (this.state == LOSE) {
-      write('GAME OVER!', (200/2)-(46/2), 152/4);
+      write('GAME OVER!', (200 / 2) - (46 / 2), 152 / 4);
     }
   }
 }
