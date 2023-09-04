@@ -117,9 +117,6 @@ class Game {
     if (this.debug) {
       this.text.forEach(t => t.render());
     }
-    getContext().fillStyle = 'white';
-    getContext().fillRect(200/2-1, 0, 2, 152);
-    getContext().fillRect(0, 152/2-1, 200, 2);
     if (this.state == WIN) {
       write('THE GOLD IS SAFE!', (200/2)-(72/2), 152/4);
     } else if (this.state == LOSE) {

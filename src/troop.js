@@ -45,6 +45,15 @@ function Troop(properties) {
       rangeIndicator.visible = false;
     }
   });
+  troop.addChild(Sprite({
+    y: troop.height + 1,
+    render: function () {
+      if (this.parent.attackTimer > 0) {
+        this.context.fillStyle = 'white';
+        this.context.fillRect(1, 0, Math.round((this.parent.attackTimer / this.parent.attackInterval) * 6), 1);
+      }
+    }
+  }));
   track(troop);
   const rangeIndicator = RangeIndicator();
   rangeIndicator.setRadius(troop.maxRange);
