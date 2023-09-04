@@ -29,8 +29,7 @@ function getIndex(char) {
 export function write(text, x, y) {
   let textX = x;
   let textY = y;
-  for (let i = 0; i < text.length; i++) {
-    let char = text[i];
+  for (const char of text) {
     if (char === '\n') {
       textX = x;
       textY += lineHeight;
@@ -46,4 +45,27 @@ export function write(text, x, y) {
       textX += metrics[char] ?? glyphWidth;
     }
   }
+}
+
+export function getSize(text) {
+  let textX = 0;
+  let textY = lineHeight;
+  let maxX = 0;
+  let maxY = 0;
+  for (const char of text) {
+    if (char === '\n') {
+      textX = 0;
+      textY += lineHeight;
+    } else if (char == ' ') {
+      textX += 2;
+    } else {
+      textX += metrics[char] ?? glyphWidth;
+    }
+    maxX = Math.max(maxX, textX);
+    maxY = Math.max(maxY, textY);
+  }
+  return {
+    x: maxX - 1,
+    y: maxY - 1
+  };
 }

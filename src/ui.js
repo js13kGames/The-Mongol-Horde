@@ -2,8 +2,8 @@ import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getConte
 import { sprites, spriteFilePath } from './sprites';
 import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
-import { ranges } from './troop';
-import { write } from './font';
+import { ranges, troopCost } from './troop';
+import { getSize, write } from './font';
 
 export class ToolbarButton extends ButtonClass {
   constructor(spriteLocation) {
@@ -13,6 +13,17 @@ export class ToolbarButton extends ButtonClass {
       },
       image: imageAssets[spriteFilePath],
       spriteLocation
+    });
+    this.tooltip = Sprite({
+      y: -12,
+      render() {
+        const cost = troopCost[spriteLocation].toString();
+        const textSize = getSize(cost);
+        this.context.fillStyle = 'rgb(70, 70, 70)';
+        this.context.fillRect(0, 0, 12 + textSize.x, 10);
+        this.context.drawImage(imageAssets[spriteFilePath], ...sprites.coin, 2, 2, 6, 6);
+        write(cost, 10, 2);
+      }
     });
   }
 
@@ -24,6 +35,7 @@ export class ToolbarButton extends ButtonClass {
     if (this.hovered) {
       this.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
       this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
+      this.tooltip.render();
     }
     super.draw();
   }
@@ -142,7 +154,7 @@ export class Ui {
       Sprite({
         x: 2,
         image: imageAssets[spriteFilePath],
-        spriteLocation: [25, 25, 6, 6],
+        spriteLocation: sprites.coin,
         anchor: { x: 0, y: 0.5 }
       })
     );

@@ -15,7 +15,8 @@ export const sprites = {
   badSoldier: getCoords(7),
   badKnight: getCoords(8),
   badArcher: getCoords(9),
-  wall: getCoords(22)
+  wall: getCoords(22),
+  coin: [25, 25, 6, 6]
 };
 
 export const spriteFilePath = 'i.png';

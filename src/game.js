@@ -43,7 +43,7 @@ class Game {
       if (!(object instanceof ToolbarButton)) {
         const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
         const point = this.grid[x / 8][y / 8];
-        if (this.ui.selected && e.button == 0 && !point.isPath && !point.collidable && point != this.grid.goal) {
+        if (this.ui.selected && e.button == 0 && point && !point.isPath && !point.collidable && point != this.grid.goal) {
           const properties = { x, y };
           switch (this.ui.selected) {
             case sprites.soldier:
@@ -75,8 +75,11 @@ class Game {
   }
 
   spawnTroop(troop) {
-    this.troops.push(troop);
-    this.tileEngine.add(troop);
+    if (this.gold >= troop.cost) {
+      this.gold -= troop.cost;
+      this.troops.push(troop);
+      this.tileEngine.add(troop);
+    }
   }
 
   despawn(object) {

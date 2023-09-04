@@ -8,6 +8,7 @@ function Troop(properties) {
     image: imageAssets[spriteFilePath],
     maxRange: ranges[properties.spriteLocation],
     attackTimer: properties.attackInterval,
+    cost: troopCost[properties.spriteLocation],
     ...properties,
 
     update() {
@@ -19,7 +20,7 @@ function Troop(properties) {
           enemy.health -= this.damage;
           if (enemy.health <= 0) {
             game.despawn(enemy);
-            game.gold += 5;
+            game.gold += 1;
           }
         }
       }
@@ -99,7 +100,13 @@ export function Wall(properties) {
 
 export const ranges = {
   [sprites.soldier]: 1.5,
-  [sprites.knight]: 1.5,
-  [sprites.archer]: 3.5,
-  [sprites.wall]: 0
+  [sprites.knight]: 2.5,
+  [sprites.archer]: 3.5
+};
+
+export const troopCost = {
+  [sprites.soldier]: 2,
+  [sprites.knight]: 5,
+  [sprites.archer]: 3,
+  [sprites.wall]: 1
 };
