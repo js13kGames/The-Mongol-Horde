@@ -1,4 +1,4 @@
-import { init, GameLoop, load, dataAssets, initKeys, initPointer } from 'kontra';
+import { init, GameLoop, load, dataAssets, initKeys, initPointer, imageAssets, setImagePath } from 'kontra';
 import tileset from './tileset';
 import { game } from './game';
 import { spriteFilePath } from './sprites';
@@ -29,8 +29,8 @@ function resizeCanvas() {
 window.addEventListener('resize', () => resizeCanvas());
 resizeCanvas();
 
-const tilesetFilePath = 'ts';
-dataAssets[location.href + tilesetFilePath] = tileset;
+const tilesetFilePath = '/ts';
+dataAssets[location.origin + tilesetFilePath] = tileset;
 load(spriteFilePath).then(() => {
   game.init();
 

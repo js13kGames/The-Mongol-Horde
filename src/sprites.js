@@ -21,4 +21,4 @@ export const sprites = {
   coin: [25, 25, 6, 6]
 };
 
-export const spriteFilePath = 'i.png';
+export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');
