@@ -1,4 +1,4 @@
-import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getContext, GameObject, lerp, Text } from 'kontra';
+import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getContext, GameObject, lerp } from 'kontra';
 import { sprites, spriteFilePath } from './sprites';
 import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
@@ -15,14 +15,16 @@ export class ToolbarButton extends ButtonClass {
       spriteLocation
     });
     this.tooltip = Sprite({
+      x: 4,
       y: -12,
       render() {
         const cost = troopCost[spriteLocation].toString();
         const textSize = getSize(cost);
+        const x = Math.floor(textSize.x / -2) - 6;
         this.context.fillStyle = 'rgb(70, 70, 70)';
-        this.context.fillRect(0, 0, 12 + textSize.x, 10);
-        this.context.drawImage(imageAssets[spriteFilePath], ...sprites.coin, 2, 2, 6, 6);
-        write(cost, 10, 2);
+        this.context.fillRect(x, 0, 12 + textSize.x, 10);
+        this.context.drawImage(imageAssets[spriteFilePath], ...sprites.coin, x + 2, 2, 6, 6);
+        write(cost, x + 10, 2);
       }
     });
   }
