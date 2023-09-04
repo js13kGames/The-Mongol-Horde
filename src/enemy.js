@@ -2,6 +2,7 @@ import { Sprite, imageAssets } from 'kontra';
 import { game } from './game';
 import { pickRandom } from './util';
 import { spriteFilePath } from './sprites';
+import { gold } from './particles';
 
 export function Enemy(spriteLocation, x, y) {
   const enemy = Sprite({
@@ -13,20 +14,26 @@ export function Enemy(spriteLocation, x, y) {
     maxHealth: 10,
     moveInterval: 30,
     moveTimer: 30,
+    attackInterval: 60,
+    attackTimer: 0,
 
     update() {
+      const point = game.grid[this.x / 8][this.y / 8];
+      const next = pickRandom(point.bestNeighbours);
       if (--this.moveTimer <= 0) {
         this.moveTimer = this.moveInterval;
-        const point = game.grid[this.x / 8][this.y / 8];
-        if (point == game.grid.goal) {
-          // Reached the goal
-          game.despawn(this);
-          game.treasureHealth--;
-        } else {
+        if (next != game.grid.goal) {
           // Move to next point
-          const next = pickRandom(point.bestNeighbours);
           this.x = next.x * 8;
           this.y = next.y * 8;
+        }
+      }
+      if (next == game.grid.goal) {
+        // Attack the treasure
+        if (--this.attackTimer <= 0) {
+          this.attackTimer = this.attackInterval;
+          game.treasureHealth--;
+          gold(next.x * 8 + 4, next.y * 8 + 4);
         }
       }
     }

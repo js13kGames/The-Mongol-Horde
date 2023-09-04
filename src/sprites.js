@@ -5,7 +5,7 @@ function getCoords(index) {
 }
 
 export const sprites = {
-  treasure: getCoords(0),
+  chest: getCoords(0),
   soldier: getCoords(1),
   farmer: getCoords(2),
   wizard: getCoords(3),
@@ -17,6 +17,7 @@ export const sprites = {
   badArcher: getCoords(9),
   wall: getCoords(22),
   wallTop: getCoords(23),
+  chestOpen: getCoords(28),
   coin: [25, 25, 6, 6]
 };
 

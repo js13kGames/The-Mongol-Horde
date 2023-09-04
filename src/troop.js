@@ -2,6 +2,7 @@ import { Sprite, imageAssets, track } from 'kontra';
 import { spriteFilePath, sprites } from './sprites';
 import { game } from './game';
 import { RangeIndicator } from './ui';
+import { blood } from './particles';
 
 function Troop(properties) {
   const troop = Sprite({
@@ -18,6 +19,7 @@ function Troop(properties) {
           this.attackTimer = this.attackInterval;
           // console.log('Attack', this, enemy);
           enemy.health -= this.damage;
+          blood(enemy.x + 4, enemy.y + 4);
           if (enemy.health <= 0) {
             game.despawn(enemy);
             game.gold += 1;

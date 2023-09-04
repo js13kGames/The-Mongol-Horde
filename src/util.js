@@ -1,4 +1,4 @@
-import { randInt } from 'kontra';
+import { lerp, randInt } from 'kontra';
 
 export function pickRandom(array) {
   return array[randInt(0, array.length - 1)];
@@ -23,4 +23,8 @@ export function insideCircle(center, point, radius) {
   const dy = center.y - point.y;
   const distanceSquared = (dx * dx) + (dy * dy);
   return distanceSquared <= radius * radius;
+}
+
+export function random(start, end) {
+  return lerp(start, end, Math.random());
 }

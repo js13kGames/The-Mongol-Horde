@@ -1,13 +1,14 @@
-import { TileEngine, getCanvas, getContext, onKey, onPointer, untrack } from 'kontra';
+import { Pool, Sprite, TileEngine, getCanvas, getContext, imageAssets, lerp, onKey, onPointer, untrack } from 'kontra';
 import map from './map';
 import { ToolbarButton, Ui } from './ui';
 import { Grid } from './grid';
-import { removeFrom, snapToGrid } from './util';
-import { sprites } from './sprites';
+import { random, removeFrom, snapToGrid } from './util';
+import { spriteFilePath, sprites } from './sprites';
 import { Soldier, Archer, Wall, Knight } from './troop';
 import { nextWave } from './wave';
 import { LOSE, PLAYING, WIN } from './state';
 import { write } from './font';
+import { bigGold, blood, gold } from './particles';
 
 class Game {
   constructor() {
@@ -30,6 +31,16 @@ class Game {
     this.grid.init();
     this.ui.init();
     this.wave = nextWave();
+    this.pool = Pool({
+      create: Sprite
+    });
+    this.chest = Sprite({
+      x: this.grid.goal.x * 8,
+      y: this.grid.goal.y * 8,
+      image: imageAssets[spriteFilePath],
+      spriteLocation: sprites.chest
+    });
+    this.tileEngine.add(this.chest);
 
     onKey('d', () => {
       this.debug = !this.debug;
@@ -112,6 +123,8 @@ class Game {
       this.wave.update();
       if (this.treasureHealth <= 0) {
         this.state = LOSE;
+        bigGold(this.grid.goal.x * 8 + 4, this.grid.goal.y * 8 + 4);
+        this.chest.spriteLocation = sprites.chestOpen;
       }
       if (this.wave.isFinished() && !this.enemies.length) {
         console.log('Wave finished!');
@@ -121,12 +134,14 @@ class Game {
         }
       }
     }
+    this.pool.update();
   }
 
   render() {
     getContext().fillStyle = '#7e9432';
     getContext().fillRect(0, 0, getCanvas().width, getCanvas().height);
     this.tileEngine.render();
+    this.pool.render();
     this.ui.render();
     if (this.debug) {
       this.text.forEach(t => t.render());
