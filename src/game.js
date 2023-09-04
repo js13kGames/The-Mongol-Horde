@@ -7,6 +7,7 @@ import { sprites } from './sprites';
 import { Soldier, Archer, Wall, Knight } from './troop';
 import { nextWave } from './wave';
 import { LOSE, PLAYING, WIN } from './state';
+import { write } from './font';
 
 class Game {
   constructor() {
@@ -61,7 +62,7 @@ class Game {
           point.collidable = true;
           this.grid.updateFlowField();
         } else if (e.button == 2) {
-          this.spawnEnemy(x, y);
+          this.ui.selected = null;
         }
       }
     });
@@ -105,10 +106,6 @@ class Game {
           this.state = WIN;
         }
       }
-    } else if (this.state == WIN) {
-      console.log('Win!');
-    } else if (this.state == LOSE) {
-      console.log('Game over');
     }
   }
 
@@ -119,6 +116,14 @@ class Game {
     this.ui.render();
     if (this.debug) {
       this.text.forEach(t => t.render());
+    }
+    getContext().fillStyle = 'white';
+    getContext().fillRect(200/2-1, 0, 2, 152);
+    getContext().fillRect(0, 152/2-1, 200, 2);
+    if (this.state == WIN) {
+      write('THE GOLD IS SAFE!', (200/2)-(72/2), 152/4);
+    } else if (this.state == LOSE) {
+      write('GAME OVER!', (200/2)-(46/2), 152/4);
     }
   }
 }

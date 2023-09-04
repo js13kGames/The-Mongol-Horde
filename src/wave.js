@@ -38,6 +38,7 @@ const waves = [
     { type: sprites.badSoldier, count: 2 }
   ]),
   new Wave([
+    { type: sprites.wolf, count: 5 },
     { type: sprites.badKnight, count: 4 }
   ])
 ];
