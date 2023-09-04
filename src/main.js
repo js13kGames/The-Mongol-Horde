@@ -29,8 +29,7 @@ function resizeCanvas() {
 window.addEventListener('resize', () => resizeCanvas());
 resizeCanvas();
 
-const tilesetFilePath = '/ts';
-dataAssets[location.origin + tilesetFilePath] = tileset;
+dataAssets[(location.href + '/ts').replace('//ts', '/ts')] = tileset;
 load(spriteFilePath).then(() => {
   game.init();
 
