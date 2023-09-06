@@ -51,11 +51,12 @@ class Game {
     });
 
     const checkWallJoin = (x, y) => {
-      const wallAbove = this.troops.find(troop => troop.x == x && troop.y == y - 8);
-      if (wallAbove) {
-        wallAbove.spriteLocation = sprites.wallTop;
+      const entityAbove = this.grid[x / 8][(y / 8) - 1].entity;
+      if (entityAbove?.spriteLocation == sprites.wall) {
+        entityAbove.spriteLocation = sprites.wallTop;
       }
-      if (this.troops.find(troop => troop.x == x && troop.y == y + 8)) {
+      const entityBelow = this.grid[x / 8][(y / 8) + 1].entity;
+      if (entityBelow?.spriteLocation == sprites.wall || entityBelow?.spriteLocation == sprites.wallTop) {
         this.troops[this.troops.length - 1].spriteLocation = sprites.wallTop;
       }
     };
@@ -74,8 +75,9 @@ class Game {
               this.spawnTroop(Archer(properties));
               break;
             case sprites.wall:
-              this.spawnTroop(Wall(properties));
-              checkWallJoin(x, y);
+              if (this.spawnTroop(Wall(properties))) {
+                checkWallJoin(x, y);
+              }
               break;
             case sprites.knight:
               this.spawnTroop(Knight(properties));
@@ -93,7 +95,7 @@ class Game {
     this.enemies.push(enemy);
     this.tileEngine.add(enemy);
     const [x, y] = snapToGrid(enemy.x, enemy.y);
-    // this.grid[x / 8][y / 8].entity = enemy;
+    this.grid[x / 8][y / 8].entity = enemy;
   }
 
   spawnTroop(troop) {
@@ -103,7 +105,9 @@ class Game {
       this.tileEngine.add(troop);
       const [x, y] = snapToGrid(troop.x, troop.y);
       this.grid[x / 8][y / 8].entity = troop;
+      return true;
     }
+    return false;
   }
 
   despawn(object) {
@@ -111,6 +115,14 @@ class Game {
     removeFrom(this.enemies, object);
     removeFrom(this.troops, object);
     this.tileEngine.remove(object);
+    const [x, y] = snapToGrid(object.x, object.y);
+    this.grid[x / 8][y / 8].entity = null;
+    if (object.spriteLocation == sprites.wall || object.spriteLocation == sprites.wallTop) {
+      const aboveObject = this.grid[x / 8][(y / 8) - 1].entity;
+      if (aboveObject.spriteLocation == sprites.wallTop) {
+        aboveObject.spriteLocation = sprites.wall;
+      }
+    }
   }
 
   update() {

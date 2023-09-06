@@ -8,8 +8,11 @@ function Troop(properties) {
   const troop = Sprite({
     image: imageAssets[spriteFilePath],
     maxRange: ranges[properties.spriteLocation],
-    attackTimer: properties.attackInterval,
+    attackTimer: 0,
     cost: troopCost[properties.spriteLocation],
+    health: troopHealth[properties.spriteLocation],
+    maxHealth: troopHealth[properties.spriteLocation],
+    isTroop: true,
     ...properties,
 
     update() {
@@ -46,17 +49,24 @@ function Troop(properties) {
 
     onOut() {
       rangeIndicator.visible = false;
-    }
-  });
-  troop.addChild(Sprite({
-    y: troop.height + 1,
-    render: function () {
-      if (this.parent.attackTimer > 0) {
+    },
+
+    render() {
+      this.draw();
+
+      if (this.attackTimer > 0) {
         this.context.fillStyle = 'white';
-        this.context.fillRect(1, 0, Math.round((this.parent.attackTimer / this.parent.attackInterval) * 6), 1);
+        this.context.fillRect(1, this.height, Math.round((this.attackTimer / this.attackInterval) * 6), 1);
+      }
+
+      if (this.health < this.maxHealth) {
+        this.context.fillStyle = 'red';
+        this.context.fillRect(1, this.height + 1, 6, 1);
+        this.context.fillStyle = 'green';
+        this.context.fillRect(1, this.height + 1, Math.round((this.health / this.maxHealth) * 6), 1);
       }
     }
-  }));
+  });
   track(troop);
   const rangeIndicator = RangeIndicator();
   rangeIndicator.setRadius(troop.maxRange);
@@ -111,4 +121,11 @@ export const troopCost = {
   [sprites.knight]: 5,
   [sprites.archer]: 3,
   [sprites.wall]: 1
+};
+
+export const troopHealth = {
+  [sprites.soldier]: 6,
+  [sprites.knight]: 10,
+  [sprites.archer]: 4,
+  [sprites.wall]: 10
 };

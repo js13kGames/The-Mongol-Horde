@@ -27,6 +27,15 @@ export function Enemy(spriteLocation, x, y) {
           game.treasureHealth--;
           gold(next.x * 8 + 4, next.y * 8 + 4);
         }
+      } else if (next.entity?.isTroop) {
+        // Attack the troop
+        if (--this.attackTimer <= 0) {
+          this.attackTimer = this.attackInterval;
+          next.entity.health--;
+          if (next.entity.health <= 0) {
+            game.despawn(next.entity);
+          }
+        }
       } else if (--this.moveTimer <= 0) {
         // Try to move
         if (!next.entity) {
@@ -34,18 +43,22 @@ export function Enemy(spriteLocation, x, y) {
           this.moveTimer = this.moveInterval;
           this.x = next.x * 8;
           this.y = next.y * 8;
+          point.entity = null;
+          next.entity = this;
         }
+      }
+    },
+
+    render() {
+      this.draw();
+
+      if (this.health < this.maxHealth) {
+        this.context.fillStyle = 'red';
+        this.context.fillRect(1, this.height + 1, 6, 1);
+        this.context.fillStyle = 'green';
+        this.context.fillRect(1, this.height + 1, Math.round((this.health / this.maxHealth) * 6), 1);
       }
     }
   });
-  enemy.addChild(Sprite({
-    y: enemy.height + 1,
-    render: function () {
-      this.context.fillStyle = 'red';
-      this.context.fillRect(1, 0, 6, 1);
-      this.context.fillStyle = 'green';
-      this.context.fillRect(1, 0, Math.round((this.parent.health / this.parent.maxHealth) * 6), 1);
-    }
-  }));
   return enemy;
 }
