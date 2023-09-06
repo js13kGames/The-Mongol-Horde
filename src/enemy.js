@@ -20,20 +20,20 @@ export function Enemy(spriteLocation, x, y) {
     update() {
       const point = game.grid[this.x / 8][this.y / 8];
       const next = pickRandom(point.bestNeighbours);
-      if (--this.moveTimer <= 0) {
-        this.moveTimer = this.moveInterval;
-        if (next != game.grid.goal) {
-          // Move to next point
-          this.x = next.x * 8;
-          this.y = next.y * 8;
-        }
-      }
       if (next == game.grid.goal) {
         // Attack the treasure
         if (--this.attackTimer <= 0) {
           this.attackTimer = this.attackInterval;
           game.treasureHealth--;
           gold(next.x * 8 + 4, next.y * 8 + 4);
+        }
+      } else if (--this.moveTimer <= 0) {
+        // Try to move
+        if (!next.entity) {
+          // Move to next point
+          this.moveTimer = this.moveInterval;
+          this.x = next.x * 8;
+          this.y = next.y * 8;
         }
       }
     }

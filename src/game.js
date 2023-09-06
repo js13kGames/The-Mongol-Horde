@@ -1,14 +1,14 @@
-import { Pool, Sprite, TileEngine, getCanvas, getContext, imageAssets, lerp, onKey, onPointer, untrack } from 'kontra';
+import { Pool, Sprite, TileEngine, getCanvas, getContext, imageAssets, onKey, onPointer, untrack } from 'kontra';
 import map from './map';
 import { ToolbarButton, Ui } from './ui';
 import { Grid } from './grid';
-import { random, removeFrom, snapToGrid } from './util';
+import { removeFrom, snapToGrid } from './util';
 import { spriteFilePath, sprites } from './sprites';
 import { Soldier, Archer, Wall, Knight } from './troop';
 import { nextWave } from './wave';
 import { LOSE, PLAYING, WIN } from './state';
 import { write } from './font';
-import { bigGold, blood, gold } from './particles';
+import { bigGold } from './particles';
 
 class Game {
   constructor() {
@@ -81,8 +81,6 @@ class Game {
               this.spawnTroop(Knight(properties));
               break;
           }
-          point.collidable = true;
-          this.grid.updateFlowField();
         } else if (e.button == 2) {
           this.ui.selected = null;
         }
@@ -94,6 +92,8 @@ class Game {
     this.waveLeft--;
     this.enemies.push(enemy);
     this.tileEngine.add(enemy);
+    const [x, y] = snapToGrid(enemy.x, enemy.y);
+    // this.grid[x / 8][y / 8].entity = enemy;
   }
 
   spawnTroop(troop) {
@@ -101,6 +101,8 @@ class Game {
       this.gold -= troop.cost;
       this.troops.push(troop);
       this.tileEngine.add(troop);
+      const [x, y] = snapToGrid(troop.x, troop.y);
+      this.grid[x / 8][y / 8].entity = troop;
     }
   }
 

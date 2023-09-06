@@ -14,6 +14,7 @@ export class Grid {
           y,
           neighbours: [],
           collidable: false,
+          entity: null,
           isPath: false,
           cost: Infinity,
           bestNeighbours: []
