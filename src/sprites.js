@@ -18,7 +18,8 @@ export const sprites = {
   wall: getCoords(22),
   wallTop: getCoords(23),
   chestOpen: getCoords(28),
-  coin: [25, 25, 6, 6]
+  coin: [25, 25, 6, 6],
+  bin: [65, 1, 6, 6]
 };
 
 export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');

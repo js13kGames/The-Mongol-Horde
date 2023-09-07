@@ -1,6 +1,6 @@
 import { Pool, Sprite, TileEngine, getCanvas, getContext, imageAssets, onKey, onPointer, untrack } from 'kontra';
 import map from './map';
-import { ToolbarButton, Ui } from './ui';
+import { Ui } from './ui';
 import { Grid } from './grid';
 import { removeFrom, snapToGrid } from './util';
 import { spriteFilePath, sprites } from './sprites';
@@ -62,30 +62,28 @@ class Game {
     };
 
     onPointer('down', (e, object) => {
-      if (!(object instanceof ToolbarButton)) {
-        const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
-        const point = this.grid[x / 8][y / 8];
-        if (this.ui.selected && e.button == 0 && point && !point.isPath && !point.collidable && point != this.grid.goal) {
-          const properties = { x, y };
-          switch (this.ui.selected) {
-            case sprites.soldier:
-              this.spawnTroop(Soldier(properties));
-              break;
-            case sprites.archer:
-              this.spawnTroop(Archer(properties));
-              break;
-            case sprites.wall:
-              if (this.spawnTroop(Wall(properties))) {
-                checkWallJoin(x, y);
-              }
-              break;
-            case sprites.knight:
-              this.spawnTroop(Knight(properties));
-              break;
-          }
-        } else if (e.button == 2) {
-          this.ui.selected = null;
+      const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
+      const point = this.grid[x / 8][y / 8];
+      if (this.ui.selected && e.button == 0 && point && !point.isPath && !point.collidable && point != this.grid.goal) {
+        const properties = { x, y };
+        switch (this.ui.selected) {
+          case sprites.soldier:
+            this.spawnTroop(Soldier(properties));
+            break;
+          case sprites.archer:
+            this.spawnTroop(Archer(properties));
+            break;
+          case sprites.wall:
+            if (this.spawnTroop(Wall(properties))) {
+              checkWallJoin(x, y);
+            }
+            break;
+          case sprites.knight:
+            this.spawnTroop(Knight(properties));
+            break;
         }
+      } else if (e.button == 2) {
+        this.ui.selected = null;
       }
     });
   }

@@ -5,7 +5,7 @@ import { game } from './game';
 import { ranges, troopCost } from './troop';
 import { getSize, write } from './font';
 
-export class ToolbarButton extends ButtonClass {
+class ToolbarButton extends ButtonClass {
   constructor(spriteLocation) {
     super({
       text: {
@@ -38,6 +38,30 @@ export class ToolbarButton extends ButtonClass {
       this.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
       this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
       this.tooltip.render();
+    }
+    super.draw();
+  }
+}
+
+class BinButton extends ButtonClass {
+  constructor() {
+    super({
+      text: {
+        font: '0px none'
+      },
+      image: imageAssets[spriteFilePath],
+      spriteLocation: sprites.bin
+    });
+  }
+
+  onDown() {
+    // Delete the character
+  }
+
+  draw() {
+    if (this.hovered) {
+      this.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
     }
     super.draw();
   }
@@ -90,6 +114,7 @@ export class Ui {
     const archerButton = new ToolbarButton(sprites.archer);
     const knightButton = new ToolbarButton(sprites.knight);
     const wallButton = new ToolbarButton(sprites.wall);
+    const binButton = new BinButton();
 
     this.toolbar = Sprite({
       y: getCanvas().height - 8,
@@ -103,7 +128,7 @@ export class Ui {
       anchor: { x: 0.5, y: 0.5 },
       flow: 'row',
       colGap: 2,
-      children: [soldierButton, archerButton, knightButton, wallButton]
+      children: [soldierButton, archerButton, knightButton, wallButton, binButton]
     });
     this.troopSelection = Sprite({
       x: getCanvas().width / 2,
