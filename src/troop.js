@@ -7,12 +7,13 @@ import { blood } from './particles';
 function Troop(properties) {
   const troop = Sprite({
     image: imageAssets[spriteFilePath],
-    maxRange: ranges[properties.spriteLocation],
+    maxRange: troopRange[properties.spriteLocation],
     attackTimer: 0,
     cost: troopCost[properties.spriteLocation],
     health: troopHealth[properties.spriteLocation],
     maxHealth: troopHealth[properties.spriteLocation],
     isTroop: true,
+    damage: troopDamage[properties.spriteLocation],
     ...properties,
 
     update() {
@@ -85,7 +86,6 @@ export function Soldier(properties) {
   return Troop({
     spriteLocation: sprites.soldier,
     attackInterval: 20,
-    damage: 2,
     ...properties
   });
 }
@@ -94,7 +94,6 @@ export function Archer(properties) {
   return Troop({
     spriteLocation: sprites.archer,
     attackInterval: 60,
-    damage: 2,
     ...properties
   });
 }
@@ -103,7 +102,6 @@ export function Knight(properties) {
   return Troop({
     spriteLocation: sprites.knight,
     attackInterval: 40,
-    damage: 4,
     ...properties
   });
 }
@@ -116,10 +114,11 @@ export function Wall(properties) {
   });
 }
 
-export const ranges = {
+export const troopRange = {
   [sprites.soldier]: 1.5,
   [sprites.knight]: 2.5,
-  [sprites.archer]: 3.5
+  [sprites.archer]: 3.5,
+  [sprites.wall]: 0
 };
 
 export const troopCost = {
@@ -134,4 +133,11 @@ export const troopHealth = {
   [sprites.knight]: 10,
   [sprites.archer]: 4,
   [sprites.wall]: 10
+};
+
+export const troopDamage = {
+  [sprites.soldier]: 2,
+  [sprites.knight]: 4,
+  [sprites.archer]: 2,
+  [sprites.wall]: 0
 };

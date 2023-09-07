@@ -20,7 +20,9 @@ export const sprites = {
   chestOpen: getCoords(37),
   coin: [25, 25, 6, 6],
   bin: getCoords(9),
-  cross: getCoords(10)
+  cross: getCoords(10),
+  damage: [41, 25, 6, 6],
+  range: [73, 25, 6, 6]
 };
 
 export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');

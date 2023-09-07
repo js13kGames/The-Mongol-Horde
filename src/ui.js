@@ -2,7 +2,7 @@ import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getConte
 import { sprites, spriteFilePath } from './sprites';
 import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
-import { ranges, troopCost } from './troop';
+import { troopRange, troopCost, troopDamage } from './troop';
 import { getSize, write } from './font';
 
 class ToolbarButton extends ButtonClass {
@@ -16,15 +16,21 @@ class ToolbarButton extends ButtonClass {
     });
     this.tooltip = Sprite({
       x: 4,
-      y: -12,
+      y: -26,
       render() {
         const cost = troopCost[spriteLocation].toString();
-        const textSize = getSize(cost);
-        const x = Math.floor(textSize.x / -2) - 6;
+        const damage = troopDamage[spriteLocation].toString();
+        const range = Math.floor(troopRange[spriteLocation]).toString();
+        const textSize = Math.max(getSize(cost).x, getSize(damage).x, getSize(range).x);
+        const x = Math.floor(textSize / -2) - 6;
         this.context.fillStyle = 'rgb(70, 70, 70)';
-        this.context.fillRect(x, 0, 12 + textSize.x, 10);
+        this.context.fillRect(x, 0, 12 + textSize, 24);
         this.context.drawImage(imageAssets[spriteFilePath], ...sprites.coin, x + 2, 2, 6, 6);
+        this.context.drawImage(imageAssets[spriteFilePath], ...sprites.damage, x + 2, 9, 6, 6);
+        this.context.drawImage(imageAssets[spriteFilePath], ...sprites.range, x + 2, 16, 6, 6);
         write(cost, x + 10, 2);
+        write(damage, x + 10, 9);
+        write(range, x + 10, 16);
       }
     });
   }
@@ -203,7 +209,7 @@ export class Ui {
       this.cursorSprite.y = y;
       this.cursorSprite.spriteLocation = this.selected;
       this.cursorSprite.render();
-      this.rangeIndicator.setRadius(ranges[this.selected]);
+      this.rangeIndicator.setRadius(troopRange[this.selected]);
     }
     this.toolbar.render();
     this.troopSelection.render();
