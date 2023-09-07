@@ -45,10 +45,12 @@ function Troop(properties) {
 
     onOver() {
       rangeIndicator.visible = true;
+      this.hovered = true;
     },
 
     onOut() {
       rangeIndicator.visible = false;
+      this.hovered = false;
     },
 
     render() {
@@ -64,6 +66,10 @@ function Troop(properties) {
         this.context.fillRect(1, this.height + 1, 6, 1);
         this.context.fillStyle = 'green';
         this.context.fillRect(1, this.height + 1, Math.round((this.health / this.maxHealth) * 6), 1);
+      }
+
+      if (this.hovered && game.ui.selected == sprites.bin) {
+        this.context.drawImage(imageAssets[spriteFilePath], ...sprites.cross, 0, 0, sprites.cross[2], sprites.cross[3]);
       }
     }
   });

@@ -39,6 +39,10 @@ class ToolbarButton extends ButtonClass {
       this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
       this.tooltip.render();
     }
+    if (game.ui.selected == this.spriteLocation) {
+      this.context.fillStyle = 'rgba(255, 255, 255, 0.2)';
+      this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
+    }
     super.draw();
   }
 }
@@ -55,12 +59,16 @@ class BinButton extends ButtonClass {
   }
 
   onDown() {
-    // Delete the character
+    game.ui.selected = sprites.bin;
   }
 
   draw() {
     if (this.hovered) {
       this.context.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
+    }
+    if (game.ui.selected == this.spriteLocation) {
+      this.context.fillStyle = 'rgba(255, 255, 255, 0.2)';
       this.context.fillRect(-1, -1, this.width + 2, this.height + 2);
     }
     super.draw();
@@ -90,7 +98,7 @@ export function RangeIndicator() {
 
     render() {
       if (this.visible) {
-        getContext().fillStyle = 'rgba(255, 0, 0, 0.4)';
+        getContext().fillStyle = 'rgba(255, 0, 0, 0.3)';
         this.squares.forEach(({ x, y }) => {
           getContext().fillRect(...snapToGrid(x * 8, y * 8), 8, 8);
         });
@@ -188,7 +196,7 @@ export class Ui {
   }
 
   render() {
-    if (this.selected != null) {
+    if (this.selected != null && this.selected != sprites.bin) {
       const pointer = getPointer();
       const [x, y] = snapToGrid(pointer.x, pointer.y);
       this.cursorSprite.x = x;

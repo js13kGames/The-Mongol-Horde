@@ -61,7 +61,7 @@ class Game {
       }
     };
 
-    onPointer('down', (e, object) => {
+    onPointer('down', (e) => {
       const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
       const point = this.grid[x / 8][y / 8];
       if (this.ui.selected && e.button == 0 && point && !point.isPath && !point.collidable && point != this.grid.goal) {
@@ -80,6 +80,13 @@ class Game {
             break;
           case sprites.knight:
             this.spawnTroop(Knight(properties));
+            break;
+          case sprites.bin:
+            if (point.entity?.isTroop) {
+              this.despawn(point.entity);
+              // Refund some gold (just one?)
+              this.gold++;
+            }
             break;
         }
       } else if (e.button == 2) {
@@ -117,7 +124,7 @@ class Game {
     this.grid[x / 8][y / 8].entity = null;
     if (object.spriteLocation == sprites.wall || object.spriteLocation == sprites.wallTop) {
       const aboveObject = this.grid[x / 8][(y / 8) - 1].entity;
-      if (aboveObject.spriteLocation == sprites.wallTop) {
+      if (aboveObject?.spriteLocation == sprites.wallTop) {
         aboveObject.spriteLocation = sprites.wall;
       }
     }
