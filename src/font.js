@@ -1,4 +1,4 @@
-import { getContext, imageAssets } from 'kontra';
+import { GameObject, getContext, imageAssets } from 'kontra';
 import { spriteFilePath } from './sprites';
 
 const xOffset = 0;
@@ -68,4 +68,24 @@ export function getSize(text) {
     x: maxX - 1,
     y: maxY - 1
   };
+}
+
+export function Text(text, x, y) {
+  const size = getSize(text);
+  return GameObject({
+    text,
+    x,
+    y,
+    width: size.x,
+    height: size.y,
+    updateText(newText) {
+      this.text = newText;
+      const size = getSize(newText);
+      this.width = size.x;
+      this.height = size.y;
+    },
+    render() {
+      write(this.text, x, y);
+    }
+  });
 }

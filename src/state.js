@@ -1,3 +1,4 @@
-export const PLAYING = 0;
-export const WIN = 1;
-export const LOSE = 2;
+export const INTRO = 0;
+export const PLAYING = 1;
+export const WIN = 2;
+export const LOSE = 3;

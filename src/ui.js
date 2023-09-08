@@ -3,7 +3,8 @@ import { sprites, spriteFilePath } from './sprites';
 import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
 import { troopRange, troopCost, troopDamage, troopAttackSpeed } from './troop';
-import { getSize, write } from './font';
+import { Text, getSize, write } from './font';
+import { INTRO } from './state';
 
 class ToolbarButton extends ButtonClass {
   constructor(spriteLocation) {
@@ -206,6 +207,41 @@ export class Ui {
         anchor: { x: 0, y: 0.5 }
       })
     );
+
+    this.startText = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height / 2,
+      anchor: { x: 0.5, y: 0.5 },
+      lines: [
+        'THE YEAR IS 1220',
+        'THE MONGOL EMPIRE IS RAPIDLY EXPANDING',
+        'AN ATTACK IS IMMINENT',
+        'WE MUST PROTECT THE TREASURE!',
+        'CLICK TO BEGIN'
+      ],
+      timer: 240,
+      next() {
+        this.removeChild(this.children[0]);
+        const line = this.lines.shift();
+        this.x = getCanvas().width / 2 + (getSize(line).x % 2 ? 0.5 : 0);
+        this.addChild(Text(line, 0, 0));
+        this.timer = this.lines.length ? 240 : Infinity;
+      },
+      render() {
+        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
+        this.draw();
+      }
+    });
+    this.startText.next();
+  }
+
+  update() {
+    if (game.state == INTRO) {
+      if (--this.startText.timer < 0) {
+        this.startText.next();
+      }
+    }
   }
 
   render() {
@@ -224,5 +260,9 @@ export class Ui {
     this.treasureHealth.render();
     this.resources.render();
     write(game.gold.toString(), 14, 141);
+
+    if (game.state == INTRO) {
+      this.startText.render();
+    }
   }
 }

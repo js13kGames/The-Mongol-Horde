@@ -6,7 +6,7 @@ import { removeFrom, snapToGrid } from './util';
 import { spriteFilePath, sprites } from './sprites';
 import { Troop } from './troop';
 import { nextWave } from './wave';
-import { LOSE, PLAYING, WIN } from './state';
+import { INTRO, LOSE, PLAYING, WIN } from './state';
 import { write } from './font';
 import { bigGold } from './particles';
 
@@ -19,7 +19,7 @@ class Game {
     this.debug = false;
     this.ui = new Ui();
     this.waveLeft = 10;
-    this.state = PLAYING;
+    this.state = INTRO;
     this.treasureHealth = 20;
     this.maxTreasureHealth = 20;
     this.gold = 10;
@@ -62,24 +62,32 @@ class Game {
     };
 
     onPointer('down', (e) => {
-      const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
-      const point = this.grid[x / 8][y / 8];
-      if (this.ui.selected && e.button == 0 && point /*&& !point.isPath*/ && !point.collidable && point != this.grid.goal) {
-        if (this.ui.selected == sprites.wall) {
-          if (this.spawnTroop(Troop(this.ui.selected, x, y))) {
-            checkWallJoin(x, y);
-          }
-        } else if (this.ui.selected == sprites.bin) {
-          if (point.entity?.isTroop) {
-            this.despawn(point.entity);
-            // Refund some gold (just one?)
-            this.gold++;
-          }
+      if (this.state == INTRO) {
+        if (!this.ui.startText.lines.length) {
+          this.state = PLAYING;
         } else {
-          this.spawnTroop(Troop(this.ui.selected, x, y));
+          this.ui.startText.next();
         }
-      } else if (e.button == 2) {
-        this.ui.selected = null;
+      } else if (this.state == PLAYING) {
+        const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
+        const point = this.grid[x / 8][y / 8];
+        if (this.ui.selected && e.button == 0 && point /*&& !point.isPath*/ && !point.collidable && point != this.grid.goal) {
+          if (this.ui.selected == sprites.wall) {
+            if (this.spawnTroop(Troop(this.ui.selected, x, y))) {
+              checkWallJoin(x, y);
+            }
+          } else if (this.ui.selected == sprites.bin) {
+            if (point.entity?.isTroop) {
+              this.despawn(point.entity);
+              // Refund some gold (just one?)
+              this.gold++;
+            }
+          } else {
+            this.spawnTroop(Troop(this.ui.selected, x, y));
+          }
+        } else if (e.button == 2) {
+          this.ui.selected = null;
+        }
       }
     });
   }
@@ -143,6 +151,7 @@ class Game {
       }
     }
     this.pool.update();
+    this.ui.update();
   }
 
   render() {
