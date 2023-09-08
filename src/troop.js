@@ -4,17 +4,20 @@ import { game } from './game';
 import { RangeIndicator } from './ui';
 import { blood } from './particles';
 
-function Troop(properties) {
+export function Troop(spriteLocation, x, y) {
   const troop = Sprite({
+    x,
+    y,
     image: imageAssets[spriteFilePath],
-    maxRange: troopRange[properties.spriteLocation],
+    spriteLocation,
+    maxRange: troopRange[spriteLocation],
     attackTimer: 0,
-    cost: troopCost[properties.spriteLocation],
-    health: troopHealth[properties.spriteLocation],
-    maxHealth: troopHealth[properties.spriteLocation],
+    attackInterval: troopAttackSpeed[spriteLocation],
+    cost: troopCost[spriteLocation],
+    health: troopHealth[spriteLocation],
+    maxHealth: troopHealth[spriteLocation],
     isTroop: true,
-    damage: troopDamage[properties.spriteLocation],
-    ...properties,
+    damage: troopDamage[spriteLocation],
 
     update() {
       if (--this.attackTimer <= 0) {
@@ -82,38 +85,6 @@ function Troop(properties) {
   return troop;
 }
 
-export function Soldier(properties) {
-  return Troop({
-    spriteLocation: sprites.soldier,
-    attackInterval: 20,
-    ...properties
-  });
-}
-
-export function Archer(properties) {
-  return Troop({
-    spriteLocation: sprites.archer,
-    attackInterval: 60,
-    ...properties
-  });
-}
-
-export function Knight(properties) {
-  return Troop({
-    spriteLocation: sprites.knight,
-    attackInterval: 40,
-    ...properties
-  });
-}
-
-export function Wall(properties) {
-  return Troop({
-    spriteLocation: sprites.wall,
-    attackInterval: Infinity,
-    ...properties
-  });
-}
-
 export const troopRange = {
   [sprites.soldier]: 1.5,
   [sprites.knight]: 2.5,
@@ -129,10 +100,10 @@ export const troopCost = {
 };
 
 export const troopHealth = {
-  [sprites.soldier]: 6,
-  [sprites.knight]: 10,
-  [sprites.archer]: 4,
-  [sprites.wall]: 10
+  [sprites.soldier]: 10,
+  [sprites.knight]: 20,
+  [sprites.archer]: 8,
+  [sprites.wall]: 20
 };
 
 export const troopDamage = {
@@ -140,4 +111,11 @@ export const troopDamage = {
   [sprites.knight]: 4,
   [sprites.archer]: 2,
   [sprites.wall]: 0
+};
+
+export const troopAttackSpeed = {
+  [sprites.soldier]: 20,
+  [sprites.knight]: 60,
+  [sprites.archer]: 60,
+  [sprites.wall]: Infinity
 };

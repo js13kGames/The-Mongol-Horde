@@ -5,15 +5,15 @@ import { sprites } from './sprites';
 import { pickRandom, removeFrom } from './util';
 
 class Wave {
-  constructor(spawnList) {
+  constructor(spawnInterval, spawnList) {
     this.spawnList = spawnList;
     this.spawnLocations = [
       [0 * 8, 8 * 8],
       [13 * 8, 0 * 8],
       [3 * 8, 2 * 8]
     ];
-    this.spawnInterval = [120, 300];
-    this.spawnTimer = 60;
+    this.spawnInterval = spawnInterval;
+    this.spawnTimer = 0;
   }
 
   update() {
@@ -33,13 +33,26 @@ class Wave {
 }
 
 const waves = [
-  new Wave([
-    { type: sprites.badArcher, count: 1 },
+  new Wave([180, 180], [
     { type: sprites.badSoldier, count: 2 }
   ]),
-  new Wave([
-    { type: sprites.wolf, count: 5 },
-    { type: sprites.badKnight, count: 4 }
+  new Wave([120, 240], [
+    { type: sprites.badSoldier, count: 4 },
+    { type: sprites.badArcher, count: 1 }
+  ]),
+  new Wave([60, 120], [
+    { type: sprites.wolf, count: 6 }
+  ]),
+  new Wave([30, 30], [
+    { type: sprites.badKnight, count: 2 }
+  ]),
+  new Wave([120, 180], [
+    { type: sprites.badSoldier, count: 4 },
+    { type: sprites.badKnight, count: 2 }
+  ]),
+  new Wave([60, 120], [
+    { type: sprites.wolf, count: 6 },
+    { type: sprites.badSoldier, count: 4 }
   ])
 ];
 

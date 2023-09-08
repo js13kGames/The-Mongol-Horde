@@ -1,7 +1,7 @@
 import { Sprite, imageAssets } from 'kontra';
 import { game } from './game';
 import { pickRandom } from './util';
-import { spriteFilePath } from './sprites';
+import { spriteFilePath, sprites } from './sprites';
 import { gold } from './particles';
 
 export function Enemy(spriteLocation, x, y) {
@@ -10,12 +10,13 @@ export function Enemy(spriteLocation, x, y) {
     y,
     image: imageAssets[spriteFilePath],
     spriteLocation,
-    health: 10,
-    maxHealth: 10,
-    moveInterval: 30,
-    moveTimer: 30,
-    attackInterval: 60,
+    health: enemyHealth[spriteLocation],
+    maxHealth: enemyHealth[spriteLocation],
+    moveInterval: enemySpeed[spriteLocation],
+    moveTimer: enemySpeed[spriteLocation],
+    attackInterval: enemyAttackSpeed[spriteLocation],
     attackTimer: 0,
+    damage: enemyDamage[spriteLocation],
 
     update() {
       const point = game.grid[this.x / 8][this.y / 8];
@@ -24,14 +25,14 @@ export function Enemy(spriteLocation, x, y) {
         // Attack the treasure
         if (--this.attackTimer <= 0) {
           this.attackTimer = this.attackInterval;
-          game.treasureHealth--;
+          game.treasureHealth -= this.damage;
           gold(next.x * 8 + 4, next.y * 8 + 4);
         }
       } else if (next.entity?.isTroop) {
         // Attack the troop
         if (--this.attackTimer <= 0) {
           this.attackTimer = this.attackInterval;
-          next.entity.health--;
+          next.entity.health -= this.damage;
           if (next.entity.health <= 0) {
             game.despawn(next.entity);
           }
@@ -62,3 +63,31 @@ export function Enemy(spriteLocation, x, y) {
   });
   return enemy;
 }
+
+export const enemyHealth = {
+  [sprites.wolf]: 5,
+  [sprites.badSoldier]: 10,
+  [sprites.badArcher]: 8,
+  [sprites.badKnight]: 20
+};
+
+export const enemySpeed = {
+  [sprites.wolf]: 20,
+  [sprites.badSoldier]: 50,
+  [sprites.badArcher]: 30,
+  [sprites.badKnight]: 80
+};
+
+export const enemyDamage = {
+  [sprites.wolf]: 1,
+  [sprites.badSoldier]: 2,
+  [sprites.badArcher]: 2,
+  [sprites.badKnight]: 4
+};
+
+export const enemyAttackSpeed = {
+  [sprites.wolf]: 40,
+  [sprites.badSoldier]: 30,
+  [sprites.badArcher]: 60,
+  [sprites.badKnight]: 60
+};

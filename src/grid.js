@@ -47,9 +47,9 @@ export class Grid {
     for (const [i, v] of game.tileEngine.layers[0].data.entries()) {
       const x = i % this.width;
       const y = Math.floor(i / this.width);
-      if ([33, 34, 35].includes(v)) {
+      if ([34, 35, 36].includes(v)) {
         this[x][y].collidable = true;
-      } else if ([15, 16, 17, 18, 22, 23, 24, 25, 26, 27].includes(v)) {
+      } else if ([16, 17, 18, 19, 23, 24, 25, 26, 27, 28].includes(v)) {
         this[x][y].isPath = true;
       }
     }

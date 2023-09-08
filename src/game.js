@@ -4,7 +4,7 @@ import { Ui } from './ui';
 import { Grid } from './grid';
 import { removeFrom, snapToGrid } from './util';
 import { spriteFilePath, sprites } from './sprites';
-import { Soldier, Archer, Wall, Knight } from './troop';
+import { Troop } from './troop';
 import { nextWave } from './wave';
 import { LOSE, PLAYING, WIN } from './state';
 import { write } from './font';
@@ -20,8 +20,8 @@ class Game {
     this.ui = new Ui();
     this.waveLeft = 10;
     this.state = PLAYING;
-    this.treasureHealth = 4;
-    this.maxTreasureHealth = 4;
+    this.treasureHealth = 20;
+    this.maxTreasureHealth = 20;
     this.gold = 10;
   }
 
@@ -64,30 +64,19 @@ class Game {
     onPointer('down', (e) => {
       const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
       const point = this.grid[x / 8][y / 8];
-      if (this.ui.selected && e.button == 0 && point && !point.isPath && !point.collidable && point != this.grid.goal) {
-        const properties = { x, y };
-        switch (this.ui.selected) {
-          case sprites.soldier:
-            this.spawnTroop(Soldier(properties));
-            break;
-          case sprites.archer:
-            this.spawnTroop(Archer(properties));
-            break;
-          case sprites.wall:
-            if (this.spawnTroop(Wall(properties))) {
-              checkWallJoin(x, y);
-            }
-            break;
-          case sprites.knight:
-            this.spawnTroop(Knight(properties));
-            break;
-          case sprites.bin:
-            if (point.entity?.isTroop) {
-              this.despawn(point.entity);
-              // Refund some gold (just one?)
-              this.gold++;
-            }
-            break;
+      if (this.ui.selected && e.button == 0 && point /*&& !point.isPath*/ && !point.collidable && point != this.grid.goal) {
+        if (this.ui.selected == sprites.wall) {
+          if (this.spawnTroop(Troop(this.ui.selected, x, y))) {
+            checkWallJoin(x, y);
+          }
+        } else if (this.ui.selected == sprites.bin) {
+          if (point.entity?.isTroop) {
+            this.despawn(point.entity);
+            // Refund some gold (just one?)
+            this.gold++;
+          }
+        } else {
+          this.spawnTroop(Troop(this.ui.selected, x, y));
         }
       } else if (e.button == 2) {
         this.ui.selected = null;
