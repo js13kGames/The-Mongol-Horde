@@ -22,7 +22,7 @@ export const sprites = {
   bin: getCoords(9),
   cross: getCoords(10),
   damage: [41, 25, 6, 6],
-  range: [73, 25, 6, 6]
+  range: [65, 17, 6, 6]
 };
 
 export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');

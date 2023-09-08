@@ -31,6 +31,8 @@ class ToolbarButton extends ButtonClass {
         write(cost, x + 10, 2);
         write(damage, x + 10, 9);
         write(range, x + 10, 16);
+        // Do cooldown instead of range, clock for icon
+        // See how text fits in there too
       }
     });
   }
