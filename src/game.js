@@ -143,10 +143,13 @@ class Game {
         this.chest.spriteLocation = sprites.chestOpen;
       }
       if (this.wave.isFinished() && !this.enemies.length) {
-        console.log('Wave finished!');
-        this.wave = nextWave();
-        if (!this.wave) {
-          this.state = WIN;
+        this.ui.waveText.update();
+        if (--this.ui.waveText.timer < 0) {
+          this.wave = nextWave();
+          this.ui.waveText.timer = 300;
+          if (!this.wave) {
+            this.state = WIN;
+          }
         }
       }
     }
@@ -162,6 +165,9 @@ class Game {
     this.ui.render();
     if (this.debug) {
       this.text.forEach(t => t.render());
+    }
+    if (this.wave.isFinished() && !this.enemies.length) {
+      this.ui.waveText.render();
     }
     if (this.state == WIN) {
       write('THE GOLD IS SAFE!', (200 / 2) - (72 / 2), 152 / 4);

@@ -234,6 +234,28 @@ export class Ui {
       }
     });
     this.startText.next();
+
+    this.waveText = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height / 2,
+      anchor: { x: 0.5, y: 0.5 },
+      timer: 300,
+      rowGap: 2,
+      children: [
+        Text('WAVE FINISHED', 0, 0),
+        Text('NEXT WAVE IN 5', 0, 0)
+      ],
+      update() {
+        const text = `NEXT WAVE IN ${Math.ceil(this.timer / 60)}`;
+        this.children[1].updateText(text);
+        this.x = getCanvas().width / 2 + (getSize(text).x % 2 ? 0.5 : 0);
+      },
+      render() {
+        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
+        this.draw();
+      }
+    });
   }
 
   update() {
