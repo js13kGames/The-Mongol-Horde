@@ -30,6 +30,7 @@ export function Troop(spriteLocation, x, y) {
           if (enemy.health <= 0) {
             game.despawn(enemy);
             game.gold += 1;
+            game.enemiesKilled++;
           }
         }
       }
@@ -114,7 +115,7 @@ export const troopDamage = {
 };
 
 export const troopAttackSpeed = {
-  [sprites.soldier]: 20,
+  [sprites.soldier]: 30,
   [sprites.knight]: 60,
   [sprites.archer]: 60,
   [sprites.wall]: Infinity

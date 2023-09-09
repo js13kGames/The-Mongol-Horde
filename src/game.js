@@ -5,9 +5,8 @@ import { Grid } from './grid';
 import { removeFrom, snapToGrid } from './util';
 import { spriteFilePath, sprites } from './sprites';
 import { Troop } from './troop';
-import { nextWave } from './wave';
+import { done, nextWave } from './wave';
 import { INTRO, LOSE, PLAYING, WIN } from './state';
-import { write } from './font';
 import { bigGold } from './particles';
 
 class Game {
@@ -22,7 +21,8 @@ class Game {
     this.state = INTRO;
     this.treasureHealth = 20;
     this.maxTreasureHealth = 20;
-    this.gold = 10;
+    this.gold = 5;
+    this.enemiesKilled = 0;
   }
 
   init() {
@@ -143,12 +143,14 @@ class Game {
         this.chest.spriteLocation = sprites.chestOpen;
       }
       if (this.wave.isFinished() && !this.enemies.length) {
-        this.ui.waveText.update();
-        if (--this.ui.waveText.timer < 0) {
-          this.wave = nextWave();
-          this.ui.waveText.timer = 300;
-          if (!this.wave) {
-            this.state = WIN;
+        if (done()) {
+          this.state = WIN;
+          this.ui.winText.updateText();
+        } else {
+          this.ui.waveText.update();
+          if (--this.ui.waveText.timer < 0) {
+            this.wave = nextWave();
+            this.ui.waveText.timer = 300;
           }
         }
       }
@@ -166,13 +168,14 @@ class Game {
     if (this.debug) {
       this.text.forEach(t => t.render());
     }
-    if (this.wave.isFinished() && !this.enemies.length) {
-      this.ui.waveText.render();
-    }
-    if (this.state == WIN) {
-      write('THE GOLD IS SAFE!', (200 / 2) - (72 / 2), 152 / 4);
+    if (this.state == PLAYING) {
+      if (this.wave.isFinished() && !this.enemies.length) {
+        this.ui.waveText.render();
+      }
+    } else if (this.state == WIN) {
+      this.ui.winText.render();
     } else if (this.state == LOSE) {
-      write('GAME OVER!', (200 / 2) - (46 / 2), 152 / 4);
+      this.ui.gameOverText.render();
     }
   }
 }

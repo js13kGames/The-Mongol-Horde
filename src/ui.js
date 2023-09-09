@@ -223,7 +223,6 @@ export class Ui {
       next() {
         this.removeChild(this.children[0]);
         const line = this.lines.shift();
-        this.x = getCanvas().width / 2 + (getSize(line).x % 2 ? 0.5 : 0);
         this.addChild(Text(line, 0, 0));
         this.timer = this.lines.length ? 240 : Infinity;
       },
@@ -241,6 +240,7 @@ export class Ui {
       anchor: { x: 0.5, y: 0.5 },
       timer: 300,
       rowGap: 2,
+      justify: 'center',
       children: [
         Text('WAVE FINISHED', 0, 0),
         Text('NEXT WAVE IN 5', 0, 0)
@@ -248,7 +248,46 @@ export class Ui {
       update() {
         const text = `NEXT WAVE IN ${Math.ceil(this.timer / 60)}`;
         this.children[1].updateText(text);
-        this.x = getCanvas().width / 2 + (getSize(text).x % 2 ? 0.5 : 0);
+      },
+      render() {
+        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
+        this.draw();
+      }
+    });
+
+    this.gameOverText = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height / 2,
+      anchor: { x: 0.5, y: 0.5 },
+      rowGap: 2,
+      justify: 'center',
+      children: [
+        Text('GAME OVER', 0, 0),
+        Text('THE TREASURE HAS BEEN STOLEN!', 0, 0)
+      ],
+      render() {
+        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
+        this.draw();
+      }
+    });
+
+    this.winText = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height / 2,
+      anchor: { x: 0.5, y: 0.5 },
+      rowGap: 2,
+      justify: 'center',
+      children: [
+        Text('YOU WIN!', 0, 0),
+        Text('WE HAVE DEFENDED AGAINST THE MONGOLS', 0, 0),
+        Text('THE TREASURE IS SAFE FOR NOW', 0, 0),
+        Text('1', 0, 0)
+      ],
+      updateText() {
+        this.children[3].updateText(`YOU KILLED ${game.enemiesKilled} INVADERS`);
+        this._d = true;
       },
       render() {
         this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';

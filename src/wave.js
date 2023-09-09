@@ -59,3 +59,7 @@ const waves = [
 export function nextWave() {
   return waves.shift();
 }
+
+export function done() {
+  return waves.length == 0;
+}
