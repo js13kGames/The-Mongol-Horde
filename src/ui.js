@@ -1,4 +1,4 @@
-import { Grid, Sprite, getCanvas, getPointer, imageAssets, lerp } from 'kontra';
+import { Button, Grid, Sprite, getCanvas, getPointer, imageAssets, lerp } from 'kontra';
 import { Text, write } from './font';
 import { game } from './game';
 import { RangeIndicator } from './rangeindicator';
@@ -115,7 +115,7 @@ export class Ui {
         this.timer = this.lines.length ? 240 : Infinity;
       },
       render() {
-        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillStyle = '#464646';
         this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
         this.draw();
       }
@@ -138,13 +138,13 @@ export class Ui {
         this.children[1].updateText(text);
       },
       render() {
-        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillStyle = '#464646';
         this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
         this.draw();
       }
     });
 
-    this.gameOverText = Grid({
+    this.loseText = Grid({
       x: getCanvas().width / 2,
       y: getCanvas().height / 2,
       anchor: { x: 0.5, y: 0.5 },
@@ -155,7 +155,7 @@ export class Ui {
         Text('THE TREASURE HAS BEEN STOLEN!', 0, 0)
       ],
       render() {
-        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillStyle = '#464646';
         this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
         this.draw();
       }
@@ -178,10 +178,47 @@ export class Ui {
         this._d = true;
       },
       render() {
-        this.context.fillStyle = 'rgba(60, 60, 60, 0.8)';
+        this.context.fillStyle = '#464646';
         this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
         this.draw();
       }
+    });
+
+    this.restartButton = Button({
+      width: 40,
+      height: 10,
+      color: '#464646',
+      onOver() {
+        this.color = '#595959';
+      },
+      onOut() {
+        this.color = '#464646';
+      },
+      onDown() {
+        game.restart();
+      },
+      render() {
+        this.draw();
+        write('RESTART', 2, 2);
+      }
+    });
+
+    this.winScreen = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height / 2,
+      anchor: { x: 0.5, y: 0.5 },
+      justify: 'center',
+      rowGap: 22,
+      children: [this.winText, this.restartButton]
+    });
+
+    this.loseScreen = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height / 2,
+      anchor: { x: 0.5, y: 0.5 },
+      justify: 'center',
+      rowGap: 6,
+      children: [this.loseText, this.restartButton]
     });
   }
 

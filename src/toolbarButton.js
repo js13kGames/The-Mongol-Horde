@@ -11,7 +11,8 @@ export class ToolbarButton extends ButtonClass {
         font: '0px none'
       },
       image: imageAssets[spriteFilePath],
-      spriteLocation
+      spriteLocation,
+      disabled: true
     });
     this.tooltip = Sprite({
       x: 4,
@@ -45,7 +46,9 @@ export class ToolbarButton extends ButtonClass {
   }
 
   onDown() {
-    game.ui.selected = this.spriteLocation;
+    if (!this.disabled) {
+      game.ui.selected = this.spriteLocation;
+    }
   }
 
   draw() {

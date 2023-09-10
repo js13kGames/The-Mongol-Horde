@@ -31,35 +31,38 @@ class Wave {
     return !this.spawnList.length;
   }
 }
+export class Waves {
+  constructor() {
+    this.list = [
+      new Wave([180, 180], [
+        { type: sprites.badSoldier, count: 2 }
+      ]),
+      // new Wave([120, 240], [
+      //   { type: sprites.badSoldier, count: 4 },
+      //   { type: sprites.badArcher, count: 1 }
+      // ]),
+      // new Wave([60, 120], [
+      //   { type: sprites.wolf, count: 6 }
+      // ]),
+      // new Wave([30, 30], [
+      //   { type: sprites.badKnight, count: 2 }
+      // ]),
+      // new Wave([120, 180], [
+      //   { type: sprites.badSoldier, count: 4 },
+      //   { type: sprites.badKnight, count: 2 }
+      // ]),
+      // new Wave([60, 120], [
+      //   { type: sprites.wolf, count: 6 },
+      //   { type: sprites.badSoldier, count: 4 }
+      // ])
+    ];
+  }
 
-const waves = [
-  new Wave([180, 180], [
-    { type: sprites.badSoldier, count: 2 }
-  ]),
-  new Wave([120, 240], [
-    { type: sprites.badSoldier, count: 4 },
-    { type: sprites.badArcher, count: 1 }
-  ]),
-  new Wave([60, 120], [
-    { type: sprites.wolf, count: 6 }
-  ]),
-  new Wave([30, 30], [
-    { type: sprites.badKnight, count: 2 }
-  ]),
-  new Wave([120, 180], [
-    { type: sprites.badSoldier, count: 4 },
-    { type: sprites.badKnight, count: 2 }
-  ]),
-  new Wave([60, 120], [
-    { type: sprites.wolf, count: 6 },
-    { type: sprites.badSoldier, count: 4 }
-  ])
-];
+  next() {
+    return this.list.shift();
+  }
 
-export function nextWave() {
-  return waves.shift();
-}
-
-export function done() {
-  return waves.length == 0;
+  isFinished() {
+    return this.list.length == 0;
+  }
 }

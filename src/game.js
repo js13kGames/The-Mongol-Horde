@@ -7,18 +7,17 @@ import { INTRO, LOSE, PLAYING, WIN } from './state';
 import { Troop, troopCost } from './troop';
 import { Ui } from './ui';
 import { removeFrom, snapToGrid } from './util';
-import { done, nextWave } from './wave';
+import { Waves } from './wave';
 
 class Game {
   constructor() {
     this.enemies = [];
     this.troops = [];
-    this.spawners = [];
     this.text = [];
     this.debug = false;
     this.ui = new Ui();
-    this.waveLeft = 10;
     this.state = INTRO;
+    this.oldState = INTRO;
     this.treasureHealth = 20;
     this.maxTreasureHealth = 20;
     this.gold = 6;
@@ -30,7 +29,8 @@ class Game {
     this.grid = new Grid(this.tileEngine);
     this.grid.init();
     this.ui.init();
-    this.wave = nextWave();
+    this.waves = new Waves();
+    this.wave = this.waves.next();
     this.pool = Pool({
       create: Sprite
     });
@@ -92,8 +92,23 @@ class Game {
     });
   }
 
+  restart() {
+    this.treasureHealth = 20;
+    this.gold = 6;
+    this.enemiesKilled = 0;
+    this.waves = new Waves();
+    this.wave = this.waves.next();
+    this.state = PLAYING;
+    this.chest.spriteLocation = sprites.chest;
+    for (let i = this.enemies.length - 1; i >= 0; i--) {
+      this.despawn(this.enemies[i]);
+    }
+    for (let i = this.troops.length - 1; i >= 0; i--) {
+      this.despawn(this.troops[i]);
+    }
+  }
+
   spawnEnemy(enemy) {
-    this.waveLeft--;
     this.enemies.push(enemy);
     this.tileEngine.add(enemy);
     const [x, y] = snapToGrid(enemy.x, enemy.y);
@@ -141,7 +156,6 @@ class Game {
       for (let i = this.troops.length - 1; i >= 0; i--) {
         this.troops[i].update();
       }
-      this.spawners.forEach(spawner => spawner.update());
       this.wave.update();
       if (this.treasureHealth <= 0) {
         this.state = LOSE;
@@ -149,13 +163,13 @@ class Game {
         this.chest.spriteLocation = sprites.chestOpen;
       }
       if (this.wave.isFinished() && !this.enemies.length) {
-        if (done()) {
+        if (this.waves.isFinished()) {
           this.state = WIN;
           this.ui.winText.updateText();
         } else {
           this.ui.waveText.update();
           if (--this.ui.waveText.timer < 0) {
-            this.wave = nextWave();
+            this.wave = this.waves.next();
             this.ui.waveText.timer = 300;
           }
         }
@@ -163,6 +177,17 @@ class Game {
     }
     this.pool.update();
     this.ui.update();
+
+    // Handle state transitions
+    if (this.state != this.oldState) {
+      if (this.state == PLAYING) {
+        this.ui.troopSelection.children[0].children.forEach(button => button.disabled = false);
+      }
+      if (this.state == WIN || this.state == LOSE) {
+        this.ui.selected = null;
+        this.ui.troopSelection.children[0].children.forEach(button => button.disabled = true);
+      }
+    }
   }
 
   render() {
@@ -179,9 +204,9 @@ class Game {
         this.ui.waveText.render();
       }
     } else if (this.state == WIN) {
-      this.ui.winText.render();
+      this.ui.winScreen.render();
     } else if (this.state == LOSE) {
-      this.ui.gameOverText.render();
+      this.ui.loseScreen.render();
     }
   }
 }
