@@ -114,7 +114,7 @@ export function RangeIndicator() {
     },
 
     render() {
-      if (this.visible) {
+      if (this.visible && this.parent.y < getCanvas().height - 16) {
         getContext().fillStyle = 'rgba(255, 0, 0, 0.3)';
         this.squares.forEach(({ x, y }) => {
           getContext().fillRect(...snapToGrid(x * 8, y * 8), 8, 8);
