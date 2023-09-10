@@ -59,9 +59,9 @@ export default defineConfig({
       },
       mangle: {
         properties: {
-          // debug: 'debug',
+          // debug: '',
           keep_quoted: true,
-          reserved: ['onOver', 'onDown', 'onUp', 'onOut', 'center'],
+          reserved: ['onOver', 'onDown', 'onUp', 'onOut', 'center', 'Escape'],
         },
         module: true,
         toplevel: true
