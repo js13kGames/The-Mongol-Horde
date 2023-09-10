@@ -71,7 +71,7 @@ class Game {
       } else if (this.state == PLAYING) {
         const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
         const point = this.grid[x / 8][y / 8];
-        if (this.ui.selected && e.button == 0 && point /*&& !point.isPath*/ && !point.collidable && point != this.grid.goal) {
+        if (this.ui.selected && e.button == 0 && point && !point.collidable && point != this.grid.goal && !point.entity) {
           if (this.ui.selected == sprites.wall) {
             if (this.spawnTroop(this.ui.selected, x, y)) {
               checkWallJoin(x, y);

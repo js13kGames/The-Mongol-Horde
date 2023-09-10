@@ -19,6 +19,17 @@ export class Ui {
     });
     this.rangeIndicator = RangeIndicator();
     this.cursorSprite.addChild(this.rangeIndicator);
+    this.cursorCross = Sprite({
+      image: imageAssets[spriteFilePath],
+      spriteLocation: sprites.cross,
+      visible: false,
+      render() {
+        if (this.visible) {
+          this.draw();
+        }
+      }
+    });
+    this.cursorSprite.addChild(this.cursorCross);
 
     const soldierButton = new ToolbarButton(sprites.soldier);
     const archerButton = new ToolbarButton(sprites.archer);
@@ -234,6 +245,14 @@ export class Ui {
     if (this.selected != null && this.selected != sprites.bin) {
       const pointer = getPointer();
       const [x, y] = snapToGrid(pointer.x, pointer.y);
+      const point = game.grid[x / 8][y / 8];
+      if (point?.collidable || point?.entity || point == game.grid.goal) {
+        this.rangeIndicator.visible = false;
+        this.cursorCross.visible = true;
+      } else {
+        this.rangeIndicator.visible = true;
+        this.cursorCross.visible = false;
+      }
       this.cursorSprite.x = x;
       this.cursorSprite.y = y;
       this.cursorSprite.spriteLocation = this.selected;
