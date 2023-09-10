@@ -21,7 +21,7 @@ class Game {
     this.state = INTRO;
     this.treasureHealth = 20;
     this.maxTreasureHealth = 20;
-    this.gold = 5;
+    this.gold = 6;
     this.enemiesKilled = 0;
   }
 
