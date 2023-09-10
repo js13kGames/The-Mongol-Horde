@@ -9,7 +9,32 @@ export function blood(x, y) {
       floor: y + 4,
       width: 1,
       height: 1,
-      color: 'red',
+      color: '#b74132',
+      dx: random(-0.3, 0.3),
+      dy: random(-0.5, 0.1),
+      ddy: 0.02,
+      ttl: random(5, 30),
+      update() {
+        this.advance();
+        if (this.y > this.floor) {
+          this.y = this.floor;
+          this.dy = 0;
+          this.ddy = 0;
+        }
+      }
+    });
+  }
+}
+
+export function stone(x, y) {
+  for (let i = 0; i < 10; i++) {
+    game.pool.get({
+      x,
+      y,
+      floor: y + 4,
+      width: 1,
+      height: 1,
+      color: '#6f6e72',
       dx: random(-0.3, 0.3),
       dy: random(-0.5, 0.1),
       ddy: 0.02,

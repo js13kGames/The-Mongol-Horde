@@ -2,7 +2,7 @@ import { Sprite, imageAssets } from 'kontra';
 import { game } from './game';
 import { pickRandom } from './util';
 import { spriteFilePath, sprites } from './sprites';
-import { gold } from './particles';
+import { blood, gold, stone } from './particles';
 
 export function Enemy(spriteLocation, x, y) {
   const enemy = Sprite({
@@ -33,6 +33,11 @@ export function Enemy(spriteLocation, x, y) {
         if (--this.attackTimer <= 0) {
           this.attackTimer = this.attackInterval;
           next.entity.health -= this.damage;
+          if (next.entity.spriteLocation == sprites.wall) {
+            stone(next.entity.x + 4, next.entity.y + 4);
+          } else {
+            blood(next.entity.x + 4, next.entity.y + 4);
+          }
           if (next.entity.health <= 0) {
             game.despawn(next.entity);
           }
