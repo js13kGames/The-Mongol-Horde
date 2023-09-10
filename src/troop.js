@@ -1,8 +1,9 @@
 import { Sprite, imageAssets, track } from 'kontra';
 import { spriteFilePath, sprites } from './sprites';
 import { game } from './game';
-import { RangeIndicator } from './ui';
+import { RangeIndicator } from './rangeIndicator';
 import { blood } from './particles';
+import { HealthBar } from './healthBar';
 
 export function Troop(spriteLocation, x, y) {
   const troop = Sprite({
@@ -18,23 +19,6 @@ export function Troop(spriteLocation, x, y) {
     maxHealth: troopHealth[spriteLocation],
     isTroop: true,
     damage: troopDamage[spriteLocation],
-
-    update() {
-      if (--this.attackTimer <= 0) {
-        const enemy = this.getClosestEnemy(this);
-        if (enemy) {
-          this.attackTimer = this.attackInterval;
-          // console.log('Attack', this, enemy);
-          enemy.health -= this.damage;
-          blood(enemy.x + 4, enemy.y + 4);
-          if (enemy.health <= 0) {
-            game.despawn(enemy);
-            game.gold += 1;
-            game.enemiesKilled++;
-          }
-        }
-      }
-    },
 
     getClosestEnemy() {
       let bestDistance = (this.maxRange * 8) ** 2;
@@ -58,20 +42,25 @@ export function Troop(spriteLocation, x, y) {
       this.hovered = false;
     },
 
+    update() {
+      if (--this.attackTimer <= 0) {
+        const enemy = this.getClosestEnemy(this);
+        if (enemy) {
+          this.attackTimer = this.attackInterval;
+          // console.log('Attack', this, enemy);
+          enemy.health -= this.damage;
+          blood(enemy.x + 4, enemy.y + 4);
+          if (enemy.health <= 0) {
+            game.despawn(enemy);
+            game.gold += 1;
+            game.enemiesKilled++;
+          }
+        }
+      }
+    },
+
     render() {
       this.draw();
-
-      if (this.attackTimer > 0) {
-        this.context.fillStyle = 'white';
-        this.context.fillRect(1, this.height, Math.round((this.attackTimer / this.attackInterval) * 6), 1);
-      }
-
-      if (this.health < this.maxHealth) {
-        this.context.fillStyle = 'red';
-        this.context.fillRect(1, this.height + 1, 6, 1);
-        this.context.fillStyle = 'green';
-        this.context.fillRect(1, this.height + 1, Math.round((this.health / this.maxHealth) * 6), 1);
-      }
 
       if (this.hovered && game.ui.selected == sprites.bin) {
         this.context.drawImage(imageAssets[spriteFilePath], ...sprites.cross, 0, 0, sprites.cross[2], sprites.cross[3]);
@@ -83,6 +72,13 @@ export function Troop(spriteLocation, x, y) {
   rangeIndicator.setRadius(troop.maxRange);
   rangeIndicator.visible = false;
   troop.addChild(rangeIndicator);
+  troop.addChild(HealthBar(() => troop.health, { max: troop.maxHealth }));
+  troop.addChild(HealthBar(() => troop.attackTimer, {
+    y: 8,
+    max: troop.attackInterval,
+    backgroundColour: 'transparent',
+    foregroundColour: 'white'
+  }));
   return troop;
 }
 

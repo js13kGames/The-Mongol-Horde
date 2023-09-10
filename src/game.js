@@ -1,13 +1,13 @@
 import { Pool, Sprite, TileEngine, getCanvas, getContext, imageAssets, onKey, onPointer, untrack } from 'kontra';
-import map from './map';
-import { Ui } from './ui';
 import { Grid } from './grid';
-import { removeFrom, snapToGrid } from './util';
-import { spriteFilePath, sprites } from './sprites';
-import { Troop } from './troop';
-import { done, nextWave } from './wave';
-import { INTRO, LOSE, PLAYING, WIN } from './state';
+import map from './map';
 import { bigGold } from './particles';
+import { spriteFilePath, sprites } from './sprites';
+import { INTRO, LOSE, PLAYING, WIN } from './state';
+import { Troop, troopCost } from './troop';
+import { Ui } from './ui';
+import { removeFrom, snapToGrid } from './util';
+import { done, nextWave } from './wave';
 
 class Game {
   constructor() {
@@ -73,7 +73,7 @@ class Game {
         const point = this.grid[x / 8][y / 8];
         if (this.ui.selected && e.button == 0 && point /*&& !point.isPath*/ && !point.collidable && point != this.grid.goal) {
           if (this.ui.selected == sprites.wall) {
-            if (this.spawnTroop(Troop(this.ui.selected, x, y))) {
+            if (this.spawnTroop(this.ui.selected, x, y)) {
               checkWallJoin(x, y);
             }
           } else if (this.ui.selected == sprites.bin) {
@@ -83,7 +83,7 @@ class Game {
               this.gold++;
             }
           } else {
-            this.spawnTroop(Troop(this.ui.selected, x, y));
+            this.spawnTroop(this.ui.selected, x, y);
           }
         } else if (e.button == 2) {
           this.ui.selected = null;
@@ -100,13 +100,14 @@ class Game {
     this.grid[x / 8][y / 8].entity = enemy;
   }
 
-  spawnTroop(troop) {
-    if (this.gold >= troop.cost) {
+  spawnTroop(type, x, y) {
+    if (this.gold >= troopCost[type]) {
+      const troop = Troop(type, x, y);
       this.gold -= troop.cost;
       this.troops.push(troop);
       this.tileEngine.add(troop);
-      const [x, y] = snapToGrid(troop.x, troop.y);
-      this.grid[x / 8][y / 8].entity = troop;
+      const [gridX, gridY] = snapToGrid(x, y);
+      this.grid[gridX / 8][gridY / 8].entity = troop;
       return true;
     }
     return false;
@@ -123,6 +124,11 @@ class Game {
       const aboveObject = this.grid[x / 8][(y / 8) - 1].entity;
       if (aboveObject?.spriteLocation == sprites.wallTop) {
         aboveObject.spriteLocation = sprites.wall;
+      }
+    }
+    for (let i = this.ui.bars.length - 1; i >= 0; i--) {
+      if (this.ui.bars[i].parent == object) {
+        this.ui.bars.splice(i, 1);
       }
     }
   }

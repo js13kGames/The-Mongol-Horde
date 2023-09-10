@@ -3,6 +3,7 @@ import { game } from './game';
 import { pickRandom } from './util';
 import { spriteFilePath, sprites } from './sprites';
 import { blood, gold, stone } from './particles';
+import { HealthBar } from './healthBar';
 
 export function Enemy(spriteLocation, x, y) {
   const enemy = Sprite({
@@ -53,19 +54,15 @@ export function Enemy(spriteLocation, x, y) {
           next.entity = this;
         }
       }
-    },
-
-    render() {
-      this.draw();
-
-      if (this.health < this.maxHealth) {
-        this.context.fillStyle = 'red';
-        this.context.fillRect(1, this.height + 1, 6, 1);
-        this.context.fillStyle = 'green';
-        this.context.fillRect(1, this.height + 1, Math.round((this.health / this.maxHealth) * 6), 1);
-      }
     }
   });
+  enemy.addChild(HealthBar(() => enemy.health, { max: enemy.maxHealth }));
+  enemy.addChild(HealthBar(() => enemy.attackTimer, {
+    y: 8,
+    max: enemy.attackInterval,
+    backgroundColour: 'transparent',
+    foregroundColour: 'white'
+  }));
   return enemy;
 }
 
