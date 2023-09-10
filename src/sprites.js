@@ -28,3 +28,10 @@ export const sprites = {
 };
 
 export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');
+
+export const spriteNames = {
+  [getCoords(6)]: 'wolf',
+  [getCoords(7)]: 'badSolider',
+  [getCoords(11)]: 'badKnight',
+  [getCoords(12)]: 'badArcher'
+};

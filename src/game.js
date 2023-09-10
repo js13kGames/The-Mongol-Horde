@@ -163,16 +163,16 @@ class Game {
         this.chest.spriteLocation = sprites.chestOpen;
       }
       if (this.wave.isFinished() && !this.enemies.length) {
-        if (this.waves.isFinished()) {
-          this.state = WIN;
-          this.ui.winText.updateText();
-        } else {
-          this.ui.waveText.update();
-          if (--this.ui.waveText.timer < 0) {
-            this.wave = this.waves.next();
-            this.ui.waveText.timer = 300;
-          }
+        // if (this.waves.isFinished()) {
+        //   this.state = WIN;
+        //   this.ui.winText.updateText();
+        // } else {
+        this.ui.waveText.update();
+        if (--this.ui.waveText.timer < 0) {
+          this.wave = this.waves.next();
+          this.ui.waveText.timer = 300;
         }
+        // }
       }
     }
     this.pool.update();
