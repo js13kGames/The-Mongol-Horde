@@ -2,7 +2,7 @@ import { imageAssets, Sprite, ButtonClass, getCanvas, Grid, getPointer, getConte
 import { sprites, spriteFilePath } from './sprites';
 import { insideCircle, snapToGrid } from './util';
 import { game } from './game';
-import { troopRange, troopCost, troopDamage, troopAttackSpeed } from './troop';
+import { troopRange, troopCost, troopDamage, troopAttackSpeed, troopHealth } from './troop';
 import { Text, getSize, write } from './font';
 import { INTRO } from './state';
 
@@ -17,27 +17,30 @@ class ToolbarButton extends ButtonClass {
     });
     this.tooltip = Sprite({
       x: 4,
-      y: spriteLocation == sprites.wall ? -11 : -32,
+      y: spriteLocation == sprites.wall ? -18 : -39,
       render() {
         const cost = troopCost[spriteLocation].toString();
+        const health = troopHealth[spriteLocation].toString();
         const damage = troopDamage[spriteLocation].toString();
         const range = Math.floor(troopRange[spriteLocation]).toString();
         const attackSpeed = (troopAttackSpeed[spriteLocation] / 10).toString();
         const textSize = spriteLocation == sprites.wall
-          ? getSize(cost).x
-          : Math.max(getSize(cost).x, getSize(damage).x, getSize(range).x, getSize(attackSpeed).x);
+          ? Math.max(getSize(cost).x, getSize(health).x)
+          : Math.max(getSize(cost).x, getSize(health).x, getSize(damage).x, getSize(range).x, getSize(attackSpeed).x);
         const x = Math.floor(textSize / -2) - 6;
         this.context.fillStyle = 'rgb(70, 70, 70)';
-        this.context.fillRect(x, 0, 12 + textSize, spriteLocation == sprites.wall ? 9 : 30);
+        this.context.fillRect(x, 0, 12 + textSize, spriteLocation == sprites.wall ? 16 : 37);
         this.context.drawImage(imageAssets[spriteFilePath], ...sprites.coin, x + 2, 2, 6, 6);
+        this.context.drawImage(imageAssets[spriteFilePath], ...sprites.heart, x+2, 9, 6, 6);
         write(cost, x + 10, 2);
+        write(health, x + 10, 9);
         if (spriteLocation != sprites.wall) {
-          this.context.drawImage(imageAssets[spriteFilePath], ...sprites.damage, x + 2, 9, 6, 6);
-          this.context.drawImage(imageAssets[spriteFilePath], ...sprites.range, x + 2, 16, 6, 6);
-          this.context.drawImage(imageAssets[spriteFilePath], ...sprites.cooldown, x + 2, 23, 6, 6);
-          write(damage, x + 10, 9);
-          write(range, x + 10, 16);
-          write(attackSpeed, x + 10, 23);
+          this.context.drawImage(imageAssets[spriteFilePath], ...sprites.damage, x + 2, 16, 6, 6);
+          this.context.drawImage(imageAssets[spriteFilePath], ...sprites.range, x + 2, 23, 6, 6);
+          this.context.drawImage(imageAssets[spriteFilePath], ...sprites.cooldown, x + 2, 30, 6, 6);
+          write(damage, x + 10, 16);
+          write(range, x + 10, 23);
+          write(attackSpeed, x + 10, 30);
         }
       }
     });
