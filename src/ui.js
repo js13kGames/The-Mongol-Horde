@@ -214,7 +214,7 @@ export class Ui {
       anchor: { x: 0.5, y: 0.5 },
       lines: [
         'THE YEAR IS 1258',
-        'THE MONGOL EMPIRE IS RAPIDLY EXPANDING WEST',
+        'THE MONGOL EMPIRE IS RAPIDLY\nEXPANDING WEST',
         'AN ATTACK IS IMMINENT',
         'WE MUST PROTECT THE TREASURE!',
         'CLICK TO BEGIN'

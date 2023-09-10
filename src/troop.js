@@ -104,12 +104,12 @@ export const troopHealth = {
   [sprites.soldier]: 10,
   [sprites.knight]: 20,
   [sprites.archer]: 8,
-  [sprites.wall]: 20
+  [sprites.wall]: 30
 };
 
 export const troopDamage = {
   [sprites.soldier]: 2,
-  [sprites.knight]: 4,
+  [sprites.knight]: 6,
   [sprites.archer]: 2,
   [sprites.wall]: 0
 };

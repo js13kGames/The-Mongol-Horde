@@ -1,4 +1,4 @@
-import { init, GameLoop, load, dataAssets, initKeys, initPointer, imageAssets, setImagePath } from 'kontra';
+import { init, GameLoop, load, dataAssets, initKeys, initPointer } from 'kontra';
 import tileset from './tileset';
 import { game } from './game';
 import { spriteFilePath } from './sprites';

@@ -77,12 +77,12 @@ export function Text(text, x, y) {
     x,
     y,
     width: size.x % 2 ? size.x + 1 : size.x,
-    height: size.y,
+    height: size.y % 2 ? size.y + 1 : size.y,
     updateText(newText) {
       this.text = newText;
       const size = getSize(newText);
       this.width = size.x % 2 ? size.x + 1 : size.x;
-      this.height = size.y;
+      this.height = size.y % 2 ? size.y + 1 : size.y;
     },
     render() {
       write(this.text, x, y);
