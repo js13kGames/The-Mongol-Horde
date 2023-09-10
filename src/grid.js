@@ -49,7 +49,7 @@ export class Grid {
       const y = Math.floor(i / this.width);
       if ([34, 35, 36].includes(v)) {
         this[x][y].collidable = true;
-      } else if ([16, 17, 18, 19, 23, 24, 25, 26, 27, 28].includes(v)) {
+      } else if ([16, 17, 18, 19, 22, 23, 24, 25, 26, 27, 28].includes(v)) {
         this[x][y].isPath = true;
       }
     }
