@@ -8,7 +8,7 @@ class Wave {
   constructor(spawnInterval, spawnList) {
     this.spawnList = spawnList;
     this.spawnLocations = [
-      [0 * 8, 8 * 8],
+      [0 * 8, 9 * 8],
       [13 * 8, 0 * 8],
       [3 * 8, 2 * 8]
     ];
