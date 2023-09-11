@@ -1,23 +1,25 @@
 import { Sprite, imageAssets } from 'kontra';
 import { game } from './game';
-import { pickRandom } from './util';
-import { spriteFilePath, sprites } from './sprites';
-import { blood, gold, stone } from './particles';
 import { HealthBar } from './healthBar';
+import { blood, gold, stone } from './particles';
+import { spriteFilePath, sprites } from './sprites';
+import { pickRandom } from './util';
 
 export function Enemy(spriteLocation, x, y) {
+  const multiplier = Math.max(0.1 * Math.E ** (0.22 * game.waves.waveNumber) + 0.8, 1);
+  console.log(`Spawning with ${multiplier} multiplier`);
   const enemy = Sprite({
     x,
     y,
     image: imageAssets[spriteFilePath],
     spriteLocation,
-    health: enemyHealth[spriteLocation],
-    maxHealth: enemyHealth[spriteLocation],
+    health: enemyHealth[spriteLocation] * multiplier,
+    maxHealth: enemyHealth[spriteLocation] * multiplier,
     moveInterval: enemySpeed[spriteLocation],
     moveTimer: enemySpeed[spriteLocation],
     attackInterval: enemyAttackSpeed[spriteLocation],
     attackTimer: 0,
-    damage: enemyDamage[spriteLocation],
+    damage: enemyDamage[spriteLocation] * multiplier,
 
     update() {
       const point = game.grid[this.x / 8][this.y / 8];
@@ -41,6 +43,7 @@ export function Enemy(spriteLocation, x, y) {
           }
           if (next.entity.health <= 0) {
             game.despawn(next.entity);
+            game.troopsKilled++;
           }
         }
       } else if (--this.moveTimer <= 0) {

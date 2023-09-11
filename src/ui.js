@@ -166,12 +166,14 @@ export class Ui {
         Text('THE MONGOLS HAVE DEFEATED YOU!', 0, 0),
         Text('1', 0, 0),
         Text('1', 0, 0),
+        Text('1', 0, 0),
         Text('1', 0, 0)
       ],
       updateText() {
-        this.children[2].updateText(`YOU SURVIVED ${game.waves.waveNumber - 1} WAVES`);
+        this.children[2].updateText(`YOU SURVIVED ${game.waves.waveNumber - 1} WAVE${game.waves.waveNumber - 1 == 1 ? '' : 'S'}`);
         this.children[3].updateText(`RECRUITED ${game.troopsHired} TROOPS`);
-        this.children[4].updateText(`AND KILLED ${game.enemiesKilled} INVADERS`);
+        this.children[4].updateText(`LOST ${game.troopsKilled} TROOPS`);
+        this.children[5].updateText(`AND KILLED ${game.enemiesKilled} INVADERS`);
       },
       render() {
         this.context.fillStyle = '#464646';

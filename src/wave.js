@@ -85,7 +85,16 @@ export class Waves {
 
     let allowance = 32 * Math.E ** (0.1 * this.waveNumber) - 38;
     console.log(allowance);
-    const interval = pickRandom(intervalCost);
+    let interval;
+    if (this.waveNumber < 8) {
+      interval = pickRandom(intervalCost);
+    } else if (this.waveNumber < 10) {
+      interval = pickRandom(intervalCost.slice(1));
+    } else if (this.waveNumber < 12) {
+      interval = pickRandom(intervalCost.slice(2));
+    } else {
+      interval = intervalCost[3];
+    }
     allowance -= interval.cost;
     const spawnList = [];
     while (allowance > 0) {

@@ -23,6 +23,7 @@ class Game {
     this.gold = 6;
     this.enemiesKilled = 0;
     this.troopsHired = 0;
+    this.troopsKilled = 0;
   }
 
   init() {
@@ -72,19 +73,19 @@ class Game {
       } else if (this.state == PLAYING) {
         const [x, y] = snapToGrid(e.offsetX / getCanvas().scale, e.offsetY / getCanvas().scale);
         const point = this.grid[x / 8][y / 8];
-        if (this.ui.selected && e.button == 0 && point && !point.collidable && point != this.grid.goal && !point.entity) {
-          if (this.ui.selected == sprites.wall) {
-            if (this.spawnTroop(this.ui.selected, x, y)) {
-              checkWallJoin(x, y);
+        if (this.ui.selected && e.button == 0 && point && !point.collidable && point != this.grid.goal) {
+          if (this.ui.selected == sprites.bin && point.entity?.isTroop) {
+            this.despawn(point.entity);
+            // Refund some gold (just one?)
+            this.gold++;
+          } else if (!point.entity) {
+            if (this.ui.selected == sprites.wall) {
+              if (this.spawnTroop(this.ui.selected, x, y)) {
+                checkWallJoin(x, y);
+              }
+            } else {
+              this.spawnTroop(this.ui.selected, x, y);
             }
-          } else if (this.ui.selected == sprites.bin) {
-            if (point.entity?.isTroop) {
-              this.despawn(point.entity);
-              // Refund some gold (just one?)
-              this.gold++;
-            }
-          } else {
-            this.spawnTroop(this.ui.selected, x, y);
           }
         } else if (e.button == 2) {
           this.ui.selected = null;
