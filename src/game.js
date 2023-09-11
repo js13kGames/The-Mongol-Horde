@@ -183,9 +183,10 @@ class Game {
       if (this.state == PLAYING) {
         this.ui.troopSelection.children[0].children.forEach(button => button.disabled = false);
       }
-      if (this.state == WIN || this.state == LOSE) {
+      if (this.state == LOSE) {
         this.ui.selected = null;
         this.ui.troopSelection.children[0].children.forEach(button => button.disabled = true);
+        this.ui.loseText.updateText();
       }
     }
   }

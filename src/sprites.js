@@ -14,7 +14,7 @@ export const sprites = {
   wolf: getCoords(6),
   badSoldier: getCoords(7),
   badKnight: getCoords(11),
-  badArcher: getCoords(12),
+  badRouge: getCoords(12),
   wall: getCoords(28),
   wallTop: getCoords(29),
   chestOpen: getCoords(37),

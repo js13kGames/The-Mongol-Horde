@@ -12,7 +12,7 @@ const spawnLocations = [
 
 const spawnCost = [
   { type: sprites.badSoldier, cost: 2 },
-  { type: sprites.badArcher, cost: 3 },
+  { type: sprites.badRouge, cost: 3 },
   { type: sprites.badKnight, cost: 5 },
   { type: sprites.wolf, cost: 1 }
 ];
@@ -56,7 +56,7 @@ export class Waves {
       ]),
       new Wave([120, 240], [
         { type: sprites.badSoldier, count: 3 }, // 6
-        { type: sprites.badArcher, count: 2 } // 6 = 12
+        { type: sprites.badRouge, count: 2 } // 6 = 12
       ]),
       new Wave([60, 120], [
         { type: sprites.wolf, count: 8 } // 6
@@ -71,7 +71,7 @@ export class Waves {
       new Wave([60, 120], [
         { type: sprites.wolf, count: 6 }, // 6
         { type: sprites.badSoldier, count: 4 }, // 8
-        { type: sprites.badArcher, count: 2 } // 6 = 20
+        { type: sprites.badRouge, count: 2 } // 6 = 20
       ])
     ];
   }

@@ -69,27 +69,27 @@ export function Enemy(spriteLocation, x, y) {
 export const enemyHealth = {
   [sprites.wolf]: 5,
   [sprites.badSoldier]: 10,
-  [sprites.badArcher]: 8,
+  [sprites.badRouge]: 8,
   [sprites.badKnight]: 20
 };
 
 export const enemySpeed = {
   [sprites.wolf]: 20,
   [sprites.badSoldier]: 50,
-  [sprites.badArcher]: 30,
+  [sprites.badRouge]: 30,
   [sprites.badKnight]: 80
 };
 
 export const enemyDamage = {
   [sprites.wolf]: 1,
-  [sprites.badSoldier]: 2,
-  [sprites.badArcher]: 2,
-  [sprites.badKnight]: 4
+  [sprites.badSoldier]: 3,
+  [sprites.badRouge]: 2,
+  [sprites.badKnight]: 5
 };
 
 export const enemyAttackSpeed = {
   [sprites.wolf]: 40,
-  [sprites.badSoldier]: 30,
-  [sprites.badArcher]: 60,
+  [sprites.badSoldier]: 35,
+  [sprites.badRouge]: 25,
   [sprites.badKnight]: 60
 };

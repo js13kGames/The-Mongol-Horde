@@ -141,12 +141,12 @@ export class Ui {
       rowGap: 2,
       justify: 'center',
       children: [
-        Text('WAVE FINISHED', 0, 0),
+        Text('WAVE 0 FINISHED', 0, 0),
         Text('NEXT WAVE IN 5', 0, 0)
       ],
       update() {
-        const text = `NEXT WAVE IN ${Math.ceil(this.timer / 60)}`;
-        this.children[1].updateText(text);
+        this.children[0].updateText(`WAVE ${game.waves.waveNumber} FINISHED`);
+        this.children[1].updateText(`NEXT WAVE IN ${Math.ceil(this.timer / 60)}`);
       },
       render() {
         this.context.fillStyle = '#464646';
@@ -163,8 +163,14 @@ export class Ui {
       justify: 'center',
       children: [
         Text('GAME OVER', 0, 0),
-        Text('THE TREASURE HAS BEEN STOLEN!', 0, 0)
+        Text('THE MONGOLS HAVE DEFEATED YOU!', 0, 0),
+        Text('1', 0, 0),
+        Text('1', 0, 0)
       ],
+      updateText() {
+        this.children[2].updateText(`YOU SURVIVED ${game.waves.waveNumber - 1} WAVES`);
+        this.children[3].updateText(`AND KILLED ${game.enemiesKilled} INVADERS`);
+      },
       render() {
         this.context.fillStyle = '#464646';
         this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
