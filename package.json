@@ -13,8 +13,9 @@
     "roadroller": "^2.1.0",
     "rollup-plugin-kontra": "^1.0.1",
     "terser": "^5.19.2",
+    "vite": "^4.4.9",
     "vite-plugin-full-reload": "^1.0.5",
-    "vite": "^4.4.9"
+    "zzfx": "^1.2.1"
   },
   "eslintConfig": {
     "env": {

@@ -4,6 +4,7 @@ import { HealthBar } from './healthBar';
 import { blood, gold, stone } from './particles';
 import { spriteFilePath, sprites } from './sprites';
 import { pickRandom } from './util';
+import { sound } from './sound';
 
 export function Enemy(spriteLocation, x, y) {
   const multiplier = Math.max(0.1 * Math.E ** (0.22 * game.waves.waveNumber) + 0.8, 1);
@@ -30,12 +31,14 @@ export function Enemy(spriteLocation, x, y) {
           this.attackTimer = this.attackInterval;
           game.treasureHealth -= this.damage;
           gold(next.x * 8 + 4, next.y * 8 + 4);
+          sound.hit();
         }
       } else if (next.entity?.isTroop) {
         // Attack the troop
         if (--this.attackTimer <= 0) {
           this.attackTimer = this.attackInterval;
           next.entity.health -= this.damage;
+          sound.hit();
           if (next.entity.spriteLocation == sprites.wall) {
             stone(next.entity.x + 4, next.entity.y + 4);
           } else {
@@ -55,6 +58,7 @@ export function Enemy(spriteLocation, x, y) {
           this.y = next.y * 8;
           point.entity = null;
           next.entity = this;
+          sound.footstep();
         }
       }
     }

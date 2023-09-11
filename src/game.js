@@ -8,6 +8,8 @@ import { Troop, troopCost } from './troop';
 import { Ui } from './ui';
 import { removeFrom, snapToGrid } from './util';
 import { Waves } from './wave';
+import { sound } from './sound';
+import { ZZFX } from 'zzfx';
 
 class Game {
   constructor() {
@@ -65,6 +67,7 @@ class Game {
 
     onPointer('down', (e) => {
       if (this.state == INTRO) {
+        ZZFX.x.resume();
         if (!this.ui.startText.lines.length) {
           this.state = PLAYING;
         } else {
@@ -187,11 +190,13 @@ class Game {
         this.ui.troopSelection.children[0].children.forEach(button => button.disabled = false);
       }
       if (this.state == LOSE) {
+        sound.gameOver2();
         this.ui.selected = null;
         this.ui.troopSelection.children[0].children.forEach(button => button.disabled = true);
         this.ui.loseText.updateText();
       }
     }
+    this.oldState = this.state;
   }
 
   render() {

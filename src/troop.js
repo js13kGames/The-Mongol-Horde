@@ -4,6 +4,7 @@ import { game } from './game';
 import { RangeIndicator } from './rangeIndicator';
 import { blood } from './particles';
 import { HealthBar } from './healthBar';
+import { sound } from './sound';
 
 export function Troop(spriteLocation, x, y) {
   const troop = Sprite({
@@ -50,6 +51,7 @@ export function Troop(spriteLocation, x, y) {
           // console.log('Attack', this, enemy);
           enemy.health -= this.damage;
           blood(enemy.x + 4, enemy.y + 4);
+          sound.hit();
           if (enemy.health <= 0) {
             game.despawn(enemy);
             game.gold += 1;
