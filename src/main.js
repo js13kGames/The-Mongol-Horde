@@ -20,7 +20,7 @@ function resizeCanvas() {
   const ratioHeight = window.innerHeight / canvas.height;
   let minRatio = Math.min(ratioWidth, ratioHeight);
   if (minRatio > 1) {
-    minRatio = Math.floor(minRatio);
+    minRatio = Math.min(Math.floor(minRatio), 6);
   }
   canvas.style.width = `${minRatio * canvas.width}px`;
   canvas.style.height = `${minRatio * canvas.height}px`;
