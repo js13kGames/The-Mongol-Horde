@@ -165,11 +165,13 @@ export class Ui {
         Text('GAME OVER', 0, 0),
         Text('THE MONGOLS HAVE DEFEATED YOU!', 0, 0),
         Text('1', 0, 0),
+        Text('1', 0, 0),
         Text('1', 0, 0)
       ],
       updateText() {
         this.children[2].updateText(`YOU SURVIVED ${game.waves.waveNumber - 1} WAVES`);
-        this.children[3].updateText(`AND KILLED ${game.enemiesKilled} INVADERS`);
+        this.children[3].updateText(`RECRUITED ${game.troopsHired} TROOPS`);
+        this.children[4].updateText(`AND KILLED ${game.enemiesKilled} INVADERS`);
       },
       render() {
         this.context.fillStyle = '#464646';

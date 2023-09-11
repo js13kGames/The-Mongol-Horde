@@ -22,6 +22,7 @@ class Game {
     this.maxTreasureHealth = 20;
     this.gold = 6;
     this.enemiesKilled = 0;
+    this.troopsHired = 0;
   }
 
   init() {
@@ -123,6 +124,7 @@ class Game {
       this.tileEngine.add(troop);
       const [gridX, gridY] = snapToGrid(x, y);
       this.grid[gridX / 8][gridY / 8].entity = troop;
+      this.troopsHired++;
       return true;
     }
     return false;
