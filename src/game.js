@@ -133,6 +133,7 @@ class Game {
       const [gridX, gridY] = snapToGrid(x, y);
       this.grid[gridX / 8][gridY / 8].entity = troop;
       this.troopsHired++;
+      sound.select();
       return true;
     }
     return false;
