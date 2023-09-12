@@ -123,11 +123,11 @@ export function ghost(x, y) {
     spriteLocation: sprites.ghost,
     ttl: 60,
     dy: -0.1,
-    opacity: 0.2,
+    opacity: 0.4,
     color: null,
     update() {
       this.advance();
-      this.opacity -= 0.003;
+      this.opacity -= 0.006;
     },
     render() {
       // Translate to nearest integer y

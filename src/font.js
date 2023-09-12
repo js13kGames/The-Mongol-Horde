@@ -8,7 +8,7 @@ const glyphHeight = 6;
 const lineHeight = 7;
 const glyphWidthOverrides = {
   'MNWTVY': 6,
-  'I1L': 4,
+  'I1L<>': 4,
   '!': 2
 };
 const metrics = {};
@@ -20,6 +20,7 @@ for (let k in glyphWidthOverrides) {
 
 function getIndex(char) {
   if (char == '!') return 0;
+  if (char == '%') return 37;
   let index = char.charCodeAt(0) - 47; // Numbers
   if (index > 17) index -= 7; // Letters
   return index;
@@ -39,6 +40,13 @@ export function write(text, x, y) {
       let index = getIndex(char);
       let sx = (index % 19) * glyphWidth + xOffset;
       let sy = (index / 19 | 0) * glyphHeight + yOffset;
+      if (char == '<') {
+        sx = 90;
+        sy = 20;
+      } else if (char == '>') {
+        sx = 90;
+        sy = 26;
+      }
       let dx = textX;
       let dy = textY;
       getContext().drawImage(imageAssets[spriteFilePath], sx, sy, glyphWidth, glyphHeight, dx, dy, glyphWidth, glyphHeight);

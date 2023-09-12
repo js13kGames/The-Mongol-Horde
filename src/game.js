@@ -3,7 +3,7 @@ import { Grid } from './grid';
 import map from './map';
 import { bigGold, ghost } from './particles';
 import { spriteFilePath, sprites } from './sprites';
-import { INTRO, LOSE, PLAYING, WIN } from './state';
+import { INTRO, LOSE, PAUSED, PLAYING, WIN } from './state';
 import { Troop, troopCost } from './troop';
 import { Ui } from './ui';
 import { removeFrom, snapToGrid } from './util';
@@ -51,7 +51,26 @@ class Game {
     });
 
     onKey('esc', () => {
-      this.ui.selected = null;
+      if (this.state == PLAYING) {
+        this.ui.selected = null;
+      } else if (this.state == PAUSED) {
+        this.ui.volumeControl.hidden = !this.ui.volumeControl.hidden;
+        this.state = this.ui.volumeControl.hidden ? PLAYING : PAUSED;
+      }
+    });
+
+    onKey('arrowleft', () => {
+      if (this.state == PAUSED) {
+        ZZFX.volume = Math.round(Math.max(0, ZZFX.volume - 0.1) * 10) / 10;
+        this.ui.volumeControl.updateText(ZZFX.volume);
+      }
+    });
+
+    onKey('arrowright', () => {
+      if (this.state == PAUSED) {
+        ZZFX.volume = Math.round(Math.min(1, ZZFX.volume + 0.1) * 10) / 10;
+        this.ui.volumeControl.updateText(ZZFX.volume);
+      }
     });
 
     const checkWallJoin = (x, y) => {
@@ -194,6 +213,7 @@ class Game {
     if (this.state != this.oldState) {
       if (this.state == PLAYING) {
         this.ui.troopSelection.children[0].children.forEach(button => button.disabled = false);
+        this.ui.volumeButton.disabled = false;
       }
       if (this.state == LOSE) {
         sound.gameOver2();

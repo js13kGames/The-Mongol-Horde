@@ -3,7 +3,7 @@ import { Text, write } from './font';
 import { game } from './game';
 import { RangeIndicator } from './rangeindicator';
 import { spriteFilePath, sprites } from './sprites';
-import { INTRO } from './state';
+import { INTRO, PAUSED, PLAYING } from './state';
 import { BinButton, ToolbarButton } from './toolbarButton';
 import { troopRange } from './troop';
 import { snapToGrid } from './util';
@@ -240,6 +240,51 @@ export class Ui {
       rowGap: 6,
       children: [this.loseText, this.restartButton]
     });
+
+    this.volumeButton = Button({
+      text: {
+        font: '0px none'
+      },
+      x: 190,
+      y: 10,
+      anchor: { x: 1, y: 0 },
+      image: imageAssets[spriteFilePath],
+      spriteLocation: sprites.speaker,
+      disabled: true,
+      onDown() {
+        game.ui.volumeControl.hidden = !game.ui.volumeControl.hidden;
+        game.state = game.ui.volumeControl.hidden ? PLAYING : PAUSED;
+      },
+      render() {
+        if (this.hovered) {
+          this.context.fillStyle = '#595959';
+        } else {
+          this.context.fillStyle = '#464646';
+        }
+        this.context.fillRect(-2, -2, this.width + 4, this.height + 4);
+        this.draw();
+      }
+    });
+
+    this.volumeControl = Grid({
+      x: getCanvas().width / 2,
+      y: getCanvas().height / 2,
+      anchor: { x: 0.5, y: 0.5 },
+      justify: 'center',
+      hidden: true,
+      children: [
+        Text('VOLUME < 30% >', 0, 0)
+      ],
+      updateText(volume) {
+        this.children[0].updateText(`VOLUME < ${volume * 100}% >`);
+        this._d = true;
+      },
+      render() {
+        this.context.fillStyle = '#464646';
+        this.context.fillRect(-4, -4, this.width + 8, this.height + 8);
+        this.draw();
+      }
+    });
   }
 
   update() {
@@ -280,5 +325,9 @@ export class Ui {
     }
 
     this.bars.forEach(bar => bar.myRender());
+    this.volumeButton.render();
+    if (!this.volumeControl.hidden) {
+      this.volumeControl.render();
+    }
   }
 }

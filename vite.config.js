@@ -62,7 +62,7 @@ export default defineConfig({
         properties: {
           // debug: '',
           keep_quoted: true,
-          reserved: ['onOver', 'onDown', 'onUp', 'onOut', 'center', 'Escape'],
+          reserved: ['onOver', 'onDown', 'onUp', 'onOut', 'center', 'Escape', 'ArrowLeft', 'ArrowRight'],
         },
         module: true,
         toplevel: true
