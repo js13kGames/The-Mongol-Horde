@@ -19,6 +19,7 @@ export default defineConfig({
         acceleration: true,
         anchor: true,
         group: true,
+        opacity: true,
         ttl: true,
         velocity: true
       },
