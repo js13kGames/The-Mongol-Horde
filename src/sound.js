@@ -2,7 +2,8 @@
 
 import { zzfx, ZZFX } from 'zzfx';
 
-ZZFX.volume = 0.3;
+export const volume = 0.4;
+ZZFX.volume = volume;
 
 export const sound = {
   footstep: (volume) => zzfx(...[volume, .15, 166, .05, .06, .05, , .7, -1.6, , , , , 3, 2]),

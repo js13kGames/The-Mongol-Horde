@@ -1,15 +1,15 @@
 import { Pool, Sprite, TileEngine, getCanvas, getContext, imageAssets, onKey, onPointer, untrack } from 'kontra';
+import { ZZFX } from 'zzfx';
 import { Grid } from './grid';
 import map from './map';
 import { bigGold, ghost } from './particles';
+import { sound } from './sound';
 import { spriteFilePath, sprites } from './sprites';
-import { INTRO, LOSE, PAUSED, PLAYING, WIN } from './state';
+import { INTRO, LOSE, PLAYING, WIN } from './state';
 import { Troop, troopCost } from './troop';
 import { Ui } from './ui';
 import { removeFrom, snapToGrid } from './util';
 import { Waves } from './wave';
-import { sound } from './sound';
-import { ZZFX } from 'zzfx';
 
 class Game {
   constructor() {
@@ -53,23 +53,6 @@ class Game {
     onKey('esc', () => {
       if (this.state == PLAYING) {
         this.ui.selected = null;
-      } else if (this.state == PAUSED) {
-        this.ui.volumeControl.hidden = !this.ui.volumeControl.hidden;
-        this.state = this.ui.volumeControl.hidden ? PLAYING : PAUSED;
-      }
-    });
-
-    onKey('arrowleft', () => {
-      if (this.state == PAUSED) {
-        ZZFX.volume = Math.round(Math.max(0, ZZFX.volume - 0.1) * 10) / 10;
-        this.ui.volumeControl.updateText(ZZFX.volume);
-      }
-    });
-
-    onKey('arrowright', () => {
-      if (this.state == PAUSED) {
-        ZZFX.volume = Math.round(Math.min(1, ZZFX.volume + 0.1) * 10) / 10;
-        this.ui.volumeControl.updateText(ZZFX.volume);
       }
     });
 
@@ -120,6 +103,8 @@ class Game {
     this.treasureHealth = 20;
     this.gold = 6;
     this.enemiesKilled = 0;
+    this.troopsHired = 0;
+    this.troopsKilled = 0;
     this.waves = new Waves();
     this.wave = this.waves.next();
     this.state = PLAYING;

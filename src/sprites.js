@@ -26,7 +26,8 @@ export const sprites = {
   cooldown: [73, 9, 6, 6],
   heart: [65, 9, 6, 6],
   ghost: [81, 17, 6, 6],
-  speaker: getCoords(43)
+  speaker: getCoords(43),
+  speakerMuted: getCoords(31)
 };
 
 export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');
