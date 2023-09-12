@@ -1,10 +1,10 @@
 import { Sprite, imageAssets, track } from 'kontra';
-import { spriteFilePath, sprites } from './sprites';
 import { game } from './game';
-import { RangeIndicator } from './rangeIndicator';
-import { blood } from './particles';
 import { HealthBar } from './healthBar';
-import { sound } from './sound';
+import { blood } from './particles';
+import { RangeIndicator } from './rangeIndicator';
+import { hitSound } from './sound';
+import { spriteFilePath, sprites } from './sprites';
 
 export function Troop(spriteLocation, x, y) {
   const troop = Sprite({
@@ -51,7 +51,7 @@ export function Troop(spriteLocation, x, y) {
           // console.log('Attack', this, enemy);
           enemy.health -= this.damage;
           blood(enemy.x + 4, enemy.y + 4);
-          sound.hit();
+          hitSound();
           if (enemy.health <= 0) {
             game.despawn(enemy);
             game.gold += 1;
@@ -106,7 +106,7 @@ export const troopHealth = {
 };
 
 export const troopDamage = {
-  [sprites.soldier]: 2,
+  [sprites.soldier]: 3,
   [sprites.knight]: 6,
   [sprites.archer]: 2,
   [sprites.wall]: 0

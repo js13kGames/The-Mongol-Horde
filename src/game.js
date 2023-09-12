@@ -173,6 +173,9 @@ class Game {
         //   this.state = WIN;
         //   this.ui.winText.updateText();
         // } else {
+        if (this.ui.waveText.timer == 300) {
+          sound.waveFinished();
+        }
         this.ui.waveText.update();
         if (--this.ui.waveText.timer < 0) {
           this.wave = this.waves.next();

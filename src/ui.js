@@ -166,14 +166,13 @@ export class Ui {
         Text('THE MONGOLS HAVE DEFEATED YOU!', 0, 0),
         Text('1', 0, 0),
         Text('1', 0, 0),
-        Text('1', 0, 0),
         Text('1', 0, 0)
       ],
       updateText() {
         this.children[2].updateText(`YOU SURVIVED ${game.waves.waveNumber - 1} WAVE${game.waves.waveNumber - 1 == 1 ? '' : 'S'}`);
         this.children[3].updateText(`RECRUITED ${game.troopsHired} TROOPS`);
-        this.children[4].updateText(`LOST ${game.troopsKilled} TROOPS`);
-        this.children[5].updateText(`AND KILLED ${game.enemiesKilled} INVADERS`);
+        // this.children[4].updateText(`LOST ${game.troopsKilled} TROOPS`);
+        this.children[4].updateText(`AND KILLED ${game.enemiesKilled} INVADERS`);
       },
       render() {
         this.context.fillStyle = '#464646';
@@ -271,7 +270,7 @@ export class Ui {
     }
     this.toolbar.render();
     this.troopSelection.render();
-    this.treasureHealth.children[2].width = Math.round(lerp(0, 24, game.treasureHealth / game.maxTreasureHealth));
+    this.treasureHealth.children[2].width = Math.max(0, Math.round(lerp(0, 24, game.treasureHealth / game.maxTreasureHealth)));
     this.treasureHealth.render();
     this.resources.render();
     write(game.gold.toString(), 14, 141);
