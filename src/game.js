@@ -188,6 +188,7 @@ class Game {
         if (--this.ui.waveText.timer < 0) {
           this.wave = this.waves.next();
           this.ui.waveText.timer = 300;
+          this.ui.waveIndicator.updateText();
         }
         // }
       }
@@ -217,9 +218,9 @@ class Game {
     this.tileEngine.render();
     this.pool.render();
     this.ui.render();
-    if (this.debug) {
-      this.text.forEach(t => t.render());
-    }
+    // if (this.debug) {
+    //   this.text.forEach(t => t.render());
+    // }
     if (this.state == PLAYING) {
       if (this.wave.isFinished() && !this.enemies.length) {
         this.ui.waveText.render();

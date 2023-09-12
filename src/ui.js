@@ -161,7 +161,7 @@ export class Ui {
       x: getCanvas().width / 2,
       y: getCanvas().height / 2,
       anchor: { x: 0.5, y: 0.5 },
-      rowGap: 2,
+      rowGap: 3,
       justify: 'center',
       children: [
         Text('GAME OVER', 0, 0),
@@ -247,8 +247,8 @@ export class Ui {
       text: {
         font: '0px none'
       },
-      x: 190,
-      y: 10,
+      x: 196,
+      y: 4,
       anchor: { x: 1, y: 0 },
       image: imageAssets[spriteFilePath],
       spriteLocation: sprites.speaker,
@@ -263,6 +263,24 @@ export class Ui {
           this.context.fillStyle = '#464646';
         }
         this.context.fillRect(-2, -2, this.width + 4, this.height + 4);
+        this.draw();
+      }
+    });
+
+    this.waveIndicator = Grid({
+      x: 5,
+      y: 5,
+      justify: 'center',
+      children: [
+        Text('WAVE 1', 0, 0)
+      ],
+      updateText() {
+        this.children[0].updateText(`WAVE ${game.waves.waveNumber}`);
+        this._d = true;
+      },
+      render() {
+        this.context.fillStyle = '#464646';
+        this.context.fillRect(-3, -3, this.width + 6, this.height + 6);
         this.draw();
       }
     });
@@ -307,5 +325,6 @@ export class Ui {
 
     this.bars.forEach(bar => bar.myRender());
     this.volumeButton.render();
+    this.waveIndicator.render();
   }
 }
