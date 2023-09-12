@@ -39,7 +39,7 @@ export function Enemy(spriteLocation, x, y) {
           this.attackTimer = this.attackInterval;
           next.entity.health -= this.damage;
           hitSound();
-          if (next.entity.spriteLocation == sprites.wall) {
+          if ([sprites.wall, sprites.wallTop].includes(next.entity.spriteLocation)) {
             stone(next.entity.x + 4, next.entity.y + 4);
           } else {
             blood(next.entity.x + 4, next.entity.y + 4);

@@ -1,7 +1,7 @@
 import { Pool, Sprite, TileEngine, getCanvas, getContext, imageAssets, onKey, onPointer, untrack } from 'kontra';
 import { Grid } from './grid';
 import map from './map';
-import { bigGold } from './particles';
+import { bigGold, ghost } from './particles';
 import { spriteFilePath, sprites } from './sprites';
 import { INTRO, LOSE, PLAYING, WIN } from './state';
 import { Troop, troopCost } from './troop';
@@ -151,6 +151,9 @@ class Game {
       if (this.ui.bars[i].parent == object) {
         this.ui.bars.splice(i, 1);
       }
+    }
+    if ([sprites.soldier, sprites.archer, sprites.knight].includes(object.spriteLocation)) {
+      ghost(object.x + 1, object.y + 1);
     }
   }
 

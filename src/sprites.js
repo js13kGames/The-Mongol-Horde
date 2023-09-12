@@ -25,6 +25,7 @@ export const sprites = {
   range: [65, 17, 6, 6],
   cooldown: [73, 9, 6, 6],
   heart: [65, 9, 6, 6],
+  ghost: [81, 17, 6, 6]
 };
 
 export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');

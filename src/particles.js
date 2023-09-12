@@ -1,4 +1,6 @@
+import { imageAssets } from 'kontra';
 import { game } from './game';
+import { spriteFilePath, sprites } from './sprites';
 import { random } from './util';
 
 export function blood(x, y) {
@@ -111,4 +113,26 @@ export function bigGold(x, y) {
       }
     });
   }
+}
+
+export function ghost(x, y) {
+  game.pool.get({
+    x,
+    y,
+    image: imageAssets[spriteFilePath],
+    spriteLocation: sprites.ghost,
+    ttl: 60,
+    dy: -0.1,
+    opacity: 0.2,
+    color: null,
+    update() {
+      this.advance();
+      this.opacity -= 0.003;
+    },
+    render() {
+      // Translate to nearest integer y
+      this.context.translate(0, Math.round(this.y) - this.y);
+      this.draw();
+    }
+  });
 }
