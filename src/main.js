@@ -29,7 +29,7 @@ function resizeCanvas() {
 window.addEventListener('resize', () => resizeCanvas());
 resizeCanvas();
 
-dataAssets[(location.href + '/ts').replace('//ts', '/ts')] = tileset;
+dataAssets[new URL('ts', location.href).href] = tileset;
 load(spriteFilePath).then(() => {
   game.init();
 
