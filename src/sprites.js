@@ -30,7 +30,7 @@ export const sprites = {
   speakerMuted: getCoords(31)
 };
 
-export const spriteFilePath = (location.pathname + '/i.png').replace('//', '/');
+export const spriteFilePath = new URL('i.png', location.href).href;
 
 export const spriteNames = {
   [sprites.wolf]: 'wolf',
